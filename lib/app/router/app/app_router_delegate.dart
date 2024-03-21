@@ -1,4 +1,5 @@
 import 'package:ayeayecaptain_mobile/redux/app/app_state.dart';
+import 'package:ayeayecaptain_mobile/ui/components/loader.dart';
 import 'package:ayeayecaptain_mobile/ui/components/material_dialog.dart';
 import 'package:ayeayecaptain_mobile/ui/dialog/page/custom_alert_dialog.dart';
 import 'package:ayeayecaptain_mobile/ui/profile/page/create_profile_page.dart';
@@ -26,34 +27,39 @@ class AppRouterDelegate extends RouterDelegate<NavigationState>
       distinct: true,
       converter: (store) => _ViewModel(store),
       builder: (context, viewModel) {
-        return Navigator(
-          key: navigatorKey,
-          onPopPage: (route, result) {
-            if (!route.didPop(result)) {
-              return false;
-            }
-            if (viewModel.route.isAlertDialogOpened) {
-              _store.dispatch(ClosePageAction());
-            }
-            return true;
-          },
-          pages: [
-            const MaterialPage(
-              key: ValueKey('profileListPage'),
-              child: ProfileListPage(),
-            ),
-            if (viewModel.route.isCreateProfilePageOpened)
-              const MaterialPage(
-                key: ValueKey('createProfilePage'),
-                child: CreateProfilePage(),
-              ),
-            if (viewModel.route.isAlertDialogOpened)
-              MaterialDialog(
-                builder: (context) => CustomAlertDialog(
-                  dialogConfig: viewModel.route.dialogConfig!,
+        return Stack(
+          children: [
+            Navigator(
+              key: navigatorKey,
+              onPopPage: (route, result) {
+                if (!route.didPop(result)) {
+                  return false;
+                }
+                if (viewModel.route.isAlertDialogOpened) {
+                  _store.dispatch(ClosePageAction());
+                }
+                return true;
+              },
+              pages: [
+                const MaterialPage(
+                  key: ValueKey('profileListPage'),
+                  child: ProfileListPage(),
                 ),
-                dismissible: true,
-              ),
+                if (viewModel.route.isCreateProfilePageOpened)
+                  const MaterialPage(
+                    key: ValueKey('createProfilePage'),
+                    child: CreateProfilePage(),
+                  ),
+                if (viewModel.route.isAlertDialogOpened)
+                  MaterialDialog(
+                    builder: (context) => CustomAlertDialog(
+                      dialogConfig: viewModel.route.dialogConfig!,
+                    ),
+                    dismissible: true,
+                  ),
+              ],
+            ),
+            if (viewModel.isLoading) const Loader(),
           ],
         );
       },
@@ -75,10 +81,15 @@ class AppRouterDelegate extends RouterDelegate<NavigationState>
 
 class _ViewModel with EquatableMixin {
   final NavigationRouteState route;
+  final bool isLoading;
 
   _ViewModel(Store<AppState> store)
-      : route = store.state.navigationState.currentRoute;
+      : route = store.state.navigationState.currentRoute,
+        isLoading = store.state.loaderState.isLoading;
 
   @override
-  List<Object?> get props => [route];
+  List<Object?> get props => [
+        route,
+        isLoading,
+      ];
 }

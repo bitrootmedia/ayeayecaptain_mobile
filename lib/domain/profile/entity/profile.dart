@@ -6,25 +6,26 @@ class Profile extends Equatable {
   final String backendUrl;
   final String name;
   final String password;
-  final String token;
+  final String? token;
   final bool isSelected;
 
   const Profile({
     required this.backendUrl,
     required this.name,
     required this.password,
-    required this.token,
+    this.token,
     required this.isSelected,
   });
 
   Profile copyWith({
+    String? token,
     bool? isSelected,
   }) =>
       Profile(
         backendUrl: backendUrl,
         name: name,
         password: password,
-        token: token,
+        token: token ?? this.token,
         isSelected: isSelected ?? this.isSelected,
       );
 

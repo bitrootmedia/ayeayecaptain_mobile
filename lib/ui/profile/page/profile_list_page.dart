@@ -1,9 +1,9 @@
 import 'package:ayeayecaptain_mobile/app/constants.dart';
 import 'package:ayeayecaptain_mobile/app/globals.dart';
 import 'package:ayeayecaptain_mobile/domain/profile/entity/profile.dart';
-import 'package:ayeayecaptain_mobile/redux/app/actions.dart';
 import 'package:ayeayecaptain_mobile/redux/app/app_state.dart';
 import 'package:ayeayecaptain_mobile/redux/navigation/actions.dart';
+import 'package:ayeayecaptain_mobile/redux/profile/actions.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
@@ -14,7 +14,7 @@ class ProfileListPage extends StatelessWidget {
 
   void _selectProfile(Profile profile) {
     final store = di<Store<AppState>>();
-    final profiles = List<Profile>.from(store.state.profiles!);
+    final profiles = List<Profile>.from(store.state.profileState.profiles!);
     store.dispatch(
       SaveProfilesAction(
         profiles.map((e) => e.copyWith(isSelected: e == profile)).toList(),
@@ -95,7 +95,7 @@ class _ViewModel with EquatableMixin {
   final Store<AppState> _store;
   final List<Profile>? profiles;
 
-  _ViewModel(this._store) : profiles = _store.state.profiles;
+  _ViewModel(this._store) : profiles = _store.state.profileState.profiles;
 
   bool get isLoaded => profiles != null;
 

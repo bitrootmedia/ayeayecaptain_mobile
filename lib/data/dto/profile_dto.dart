@@ -31,7 +31,7 @@ class ProfileDto {
         domain.backendUrl,
         domain.name,
         domain.password,
-        domain.token,
+        domain.token!,
         domain.isSelected,
       );
 

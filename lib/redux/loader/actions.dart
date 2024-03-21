@@ -1,0 +1,3 @@
+class ShowLoaderAction {}
+
+class HideLoaderAction {}

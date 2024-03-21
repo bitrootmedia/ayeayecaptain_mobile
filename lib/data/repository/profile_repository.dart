@@ -5,14 +5,33 @@ import 'package:ayeayecaptain_mobile/data/dto/profile_dto.dart';
 import 'package:ayeayecaptain_mobile/domain/profile/entity/profile.dart';
 import 'package:ayeayecaptain_mobile/domain/profile/interface/profile_repository.dart'
     as domain;
+import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 const _profilesKey = 'profiles';
 
 class ProfileRepository implements domain.ProfileRepository {
+  final Dio _client;
   final FlutterSecureStorage _storage;
 
-  ProfileRepository(this._storage);
+  ProfileRepository(
+    this._client,
+    this._storage,
+  );
+
+  @override
+  Future<FailureOrResult<String>> login(Profile profile) async {
+    final response = await _client.post(
+      '${profile.backendUrl}/api/auth/login/',
+      data: {
+        'username': profile.name,
+        'password': profile.password,
+      },
+    );
+
+    final token = (response.data as Map<String, dynamic>)['key'];
+    return FailureOrResult.success(token);
+  }
 
   @override
   Future<FailureOrResult<List<Profile>>> getProfiles() async {

@@ -1,9 +1,9 @@
 import 'package:ayeayecaptain_mobile/app/globals.dart';
 import 'package:ayeayecaptain_mobile/app/utils/validation.dart';
 import 'package:ayeayecaptain_mobile/domain/profile/entity/profile.dart';
-import 'package:ayeayecaptain_mobile/redux/app/actions.dart';
 import 'package:ayeayecaptain_mobile/redux/app/app_state.dart';
 import 'package:ayeayecaptain_mobile/redux/navigation/actions.dart';
+import 'package:ayeayecaptain_mobile/redux/profile/actions.dart';
 import 'package:ayeayecaptain_mobile/ui/components/custom_filled_button.dart';
 import 'package:ayeayecaptain_mobile/ui/components/custom_text_field.dart';
 import 'package:ayeayecaptain_mobile/ui/components/unfocusable.dart';
@@ -26,15 +26,8 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
   String name = '';
   String password = '';
 
-  void _addProfile(Profile newProfile) {
-    final profiles = List<Profile>.from(store.state.profiles ?? [])
-        .map((e) => e.copyWith(isSelected: false))
-        .toList();
-    store.dispatch(SaveProfilesAction([...profiles, newProfile]));
-  }
-
   bool profileExists() {
-    return store.state.profiles
+    return store.state.profileState.profiles
             ?.any((e) => e.name == name && e.backendUrl == backendUrl) ??
         false;
   }
@@ -63,7 +56,11 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
                     label: 'Backend URL',
                     validator: isNotEmptyValidator,
                     onChanged: (value) {
-                      backendUrl = value.trim();
+                      value = value.trim();
+                      if (value.endsWith('/')) {
+                        value = value.substring(0, value.length - 1);
+                      }
+                      backendUrl = value;
                     },
                   ),
                   const SizedBox(height: 16),
@@ -89,14 +86,16 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
                         if (!profileExists()) {
-                          _addProfile(Profile(
-                            backendUrl: backendUrl,
-                            name: name,
-                            password: password,
-                            token: '123',
-                            isSelected: true,
-                          ));
-                          store.dispatch(ClosePageAction());
+                          store.dispatch(
+                            LoginAction(
+                              Profile(
+                                backendUrl: backendUrl,
+                                name: name,
+                                password: password,
+                                isSelected: true,
+                              ),
+                            ),
+                          );
                         } else {
                           store.dispatch(
                             OpenAlertDialogAction(
