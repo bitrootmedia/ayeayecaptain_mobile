@@ -12,17 +12,8 @@ abstract class AppTheme {
       backgroundColor: seedColor,
       foregroundColor: Colors.white,
     ),
-  );
-
-  static final dark = ThemeData(
-    useMaterial3: true,
-    colorScheme: ColorScheme.fromSeed(
-      brightness: Brightness.dark,
-      seedColor: seedColor,
-    ),
-    appBarTheme: const AppBarTheme(
-      backgroundColor: seedColor,
-      foregroundColor: Colors.white,
+    inputDecorationTheme: const InputDecorationTheme(
+      border: OutlineInputBorder(),
     ),
   );
 }

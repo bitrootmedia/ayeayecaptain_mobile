@@ -7,6 +7,8 @@ class NavigationReducer extends ReducerClass<NavigationState> {
   NavigationState call(NavigationState state, action) =>
       combineReducers<NavigationState>([
         TypedReducer(_closePage).call,
+        TypedReducer(_openCreateProfilePage).call,
+        TypedReducer(_openAlertDialog).call,
       ])(state, action);
 
   NavigationState _closePage(
@@ -17,5 +19,34 @@ class NavigationReducer extends ReducerClass<NavigationState> {
         previousRoutes:
             state.previousRoutes.sublist(0, state.previousRoutes.length - 1),
         currentRoute: state.previousRoutes.last,
+      );
+
+  NavigationState _openCreateProfilePage(
+    NavigationState state,
+    OpenCreateProfilePageAction action,
+  ) =>
+      state.copyWith(
+        previousRoutes: [
+          ...state.previousRoutes,
+          state.currentRoute,
+        ],
+        currentRoute: state.currentRoute.copyWith(
+          isCreateProfilePageOpened: true,
+        ),
+      );
+
+  NavigationState _openAlertDialog(
+    NavigationState state,
+    OpenAlertDialogAction action,
+  ) =>
+      state.copyWith(
+        previousRoutes: [
+          ...state.previousRoutes,
+          state.currentRoute,
+        ],
+        currentRoute: state.currentRoute.copyWith(
+          isAlertDialogOpened: true,
+          dialogConfig: action.dialogConfig,
+        ),
       );
 }

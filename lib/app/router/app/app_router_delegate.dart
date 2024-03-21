@@ -1,5 +1,8 @@
 import 'package:ayeayecaptain_mobile/redux/app/app_state.dart';
-import 'package:ayeayecaptain_mobile/ui/home/page/home_page.dart';
+import 'package:ayeayecaptain_mobile/ui/components/material_dialog.dart';
+import 'package:ayeayecaptain_mobile/ui/dialog/page/custom_alert_dialog.dart';
+import 'package:ayeayecaptain_mobile/ui/profile/page/create_profile_page.dart';
+import 'package:ayeayecaptain_mobile/ui/profile/page/profile_list_page.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
@@ -29,14 +32,28 @@ class AppRouterDelegate extends RouterDelegate<NavigationState>
             if (!route.didPop(result)) {
               return false;
             }
+            if (viewModel.route.isAlertDialogOpened) {
+              _store.dispatch(ClosePageAction());
+            }
             return true;
           },
-          pages: const [
-            // if (viewModel.route.isPageOpened)
-            MaterialPage(
-              key: ValueKey('homePage'),
-              child: HomePage(),
+          pages: [
+            const MaterialPage(
+              key: ValueKey('profileListPage'),
+              child: ProfileListPage(),
             ),
+            if (viewModel.route.isCreateProfilePageOpened)
+              const MaterialPage(
+                key: ValueKey('createProfilePage'),
+                child: CreateProfilePage(),
+              ),
+            if (viewModel.route.isAlertDialogOpened)
+              MaterialDialog(
+                builder: (context) => CustomAlertDialog(
+                  dialogConfig: viewModel.route.dialogConfig!,
+                ),
+                dismissible: true,
+              ),
           ],
         );
       },

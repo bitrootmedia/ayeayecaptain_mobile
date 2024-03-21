@@ -44,7 +44,6 @@ class _AppState extends State<App> {
         supportedLocales: AppLocalizations.supportedLocales,
         localeResolutionCallback: _resolveLocale,
         theme: AppTheme.light,
-        darkTheme: AppTheme.dark,
         themeMode: ThemeMode.light,
         scaffoldMessengerKey: snackbarKey,
       ),
