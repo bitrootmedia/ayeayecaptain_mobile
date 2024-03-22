@@ -2,7 +2,10 @@ import 'package:ayeayecaptain_mobile/domain/profile/entity/profile.dart';
 import 'package:ayeayecaptain_mobile/domain/profile/interface/profile_repository.dart';
 import 'package:ayeayecaptain_mobile/redux/app/app_state.dart';
 import 'package:ayeayecaptain_mobile/redux/loader/actions.dart';
+import 'package:ayeayecaptain_mobile/redux/navigation/actions.dart';
 import 'package:ayeayecaptain_mobile/redux/profile/actions.dart';
+import 'package:ayeayecaptain_mobile/redux/project/actions.dart';
+import 'package:ayeayecaptain_mobile/redux/task/actions.dart';
 import 'package:redux_epics/redux_epics.dart';
 
 class ProfileMiddleware extends EpicMiddleware<AppState> {
@@ -39,7 +42,6 @@ class ProfileMiddleware extends EpicMiddleware<AppState> {
               final newProfile =
                   action.profile.copyWith(token: request.result!);
               yield SaveProfilesAction([...profiles, newProfile]);
-              //TODO redirect to content page
             }
             yield HideLoaderAction();
           },
@@ -79,6 +81,12 @@ class ProfileMiddleware extends EpicMiddleware<AppState> {
 
             if (request.wasSuccessful) {
               yield GetProfilesAction();
+
+              // Reset app content
+              yield ResetProjectsAction();
+              yield ResetTasksAction();
+
+              yield OpenHomePageAction();
             }
           },
         ),

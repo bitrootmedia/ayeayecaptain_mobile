@@ -1,9 +1,19 @@
 import 'package:ayeayecaptain_mobile/data/repository/profile_repository.dart';
 import 'package:ayeayecaptain_mobile/domain/profile/interface/profile_repository.dart'
     as domain;
+import 'package:ayeayecaptain_mobile/data/repository/project_repository.dart';
+import 'package:ayeayecaptain_mobile/domain/project/interface/project_repository.dart'
+    as domain;
+import 'package:ayeayecaptain_mobile/data/repository/task_repository.dart';
+import 'package:ayeayecaptain_mobile/domain/task/interface/task_repository.dart'
+    as domain;
+import 'package:ayeayecaptain_mobile/redux/navigation/state/navigation_route_state.dart';
+import 'package:ayeayecaptain_mobile/redux/navigation/state/navigation_state.dart';
 import 'package:ayeayecaptain_mobile/redux/profile/profile_middleware.dart';
 import 'package:ayeayecaptain_mobile/redux/app/app_reducer.dart';
 import 'package:ayeayecaptain_mobile/redux/app/app_state.dart';
+import 'package:ayeayecaptain_mobile/redux/project/project_middleware.dart';
+import 'package:ayeayecaptain_mobile/redux/task/task_middleware.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:ayeayecaptain_mobile/app/globals.dart';
@@ -30,13 +40,17 @@ Future<void> initialize() async {
   );
 
   di.registerSingleton<domain.ProfileRepository>(ProfileRepository(di(), di()));
+  di.registerSingleton<domain.ProjectRepository>(ProjectRepository(di()));
+  di.registerSingleton<domain.TaskRepository>(TaskRepository(di()));
 
   di.registerSingleton(
     Store<AppState>(
       AppReducer().call,
-      initialState: _initAppState(),
+      initialState: await _initAppState(),
       middleware: [
         ProfileMiddleware(di()).call,
+        ProjectMiddleware(di()).call,
+        TaskMiddleware(di()).call,
         LoggingMiddleware(
           logger: Logger('Redux Logger')
             ..onRecord
@@ -49,6 +63,18 @@ Future<void> initialize() async {
   );
 }
 
-AppState _initAppState() {
-  return AppState.initial();
+Future<AppState> _initAppState() async {
+  final hasProfile = await di<domain.ProfileRepository>().hasProfile();
+
+  return AppState.initial().copyWith(
+    navigationState: NavigationState.initial().copyWith(
+      currentRoute: hasProfile
+          ? const NavigationRouteState(
+              isHomePageOpened: true,
+            )
+          : const NavigationRouteState(
+              isCreateProfilePageOpened: true,
+            ),
+    ),
+  );
 }

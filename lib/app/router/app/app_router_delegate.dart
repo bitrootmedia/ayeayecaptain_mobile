@@ -2,8 +2,11 @@ import 'package:ayeayecaptain_mobile/redux/app/app_state.dart';
 import 'package:ayeayecaptain_mobile/ui/components/loader.dart';
 import 'package:ayeayecaptain_mobile/ui/components/material_dialog.dart';
 import 'package:ayeayecaptain_mobile/ui/dialog/page/custom_alert_dialog.dart';
+import 'package:ayeayecaptain_mobile/ui/home/page/home_page.dart';
 import 'package:ayeayecaptain_mobile/ui/profile/page/create_profile_page.dart';
 import 'package:ayeayecaptain_mobile/ui/profile/page/profile_list_page.dart';
+import 'package:ayeayecaptain_mobile/ui/project/page/project_list_page.dart';
+import 'package:ayeayecaptain_mobile/ui/task/page/task_list_page.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
@@ -41,10 +44,26 @@ class AppRouterDelegate extends RouterDelegate<NavigationState>
                 return true;
               },
               pages: [
-                const MaterialPage(
-                  key: ValueKey('profileListPage'),
-                  child: ProfileListPage(),
-                ),
+                if (viewModel.route.isHomePageOpened)
+                  const MaterialPage(
+                    key: ValueKey('homePage'),
+                    child: HomePage(),
+                  ),
+                if (viewModel.route.isProjectListPageOpened)
+                  const MaterialPage(
+                    key: ValueKey('projectListPage'),
+                    child: ProjectListPage(),
+                  ),
+                if (viewModel.route.isTaskListPageOpened)
+                  const MaterialPage(
+                    key: ValueKey('taskListPage'),
+                    child: TaskListPage(),
+                  ),
+                if (viewModel.route.isProfileListPageOpened)
+                  const MaterialPage(
+                    key: ValueKey('profileListPage'),
+                    child: ProfileListPage(),
+                  ),
                 if (viewModel.route.isCreateProfilePageOpened)
                   const MaterialPage(
                     key: ValueKey('createProfilePage'),

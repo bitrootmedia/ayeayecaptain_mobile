@@ -45,6 +45,13 @@ class ProfileListPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('My Profiles'),
+        automaticallyImplyLeading: false,
+        leading: store.state.navigationState.previousRoutes.isNotEmpty
+            ? IconButton(
+                onPressed: () => store.dispatch(ClosePageAction()),
+                icon: const Icon(Icons.arrow_back_ios_new_rounded),
+              )
+            : null,
         actions: [
           IconButton(
             onPressed: () => store.dispatch(OpenCreateProfilePageAction()),
@@ -55,36 +62,18 @@ class ProfileListPage extends StatelessWidget {
       body: StoreConnector<AppState, _ViewModel>(
         distinct: true,
         converter: (store) => _ViewModel(store),
-        onInitialBuild: (viewModel) {
-          viewModel.loadData();
-        },
         builder: (context, viewModel) {
-          return viewModel.isLoaded
-              ? viewModel.profiles!.isNotEmpty
-                  ? ListView.separated(
-                      itemCount: viewModel.profiles!.length,
-                      itemBuilder: (context, index) {
-                        final profile = viewModel.profiles![index];
-                        return getProfileTile(profile);
-                      },
-                      separatorBuilder: (_, __) => const Divider(
-                        thickness: 0.5,
-                        height: 0.5,
-                      ),
-                    )
-                  : const Padding(
-                      padding: EdgeInsets.all(32),
-                      child: Center(
-                        child: Text(
-                          'You don\'t have any profiles yet.\nTap + button to create a profile.',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(color: Colors.grey),
-                        ),
-                      ),
-                    )
-              : const Center(
-                  child: CircularProgressIndicator(),
-                );
+          return ListView.separated(
+            itemCount: viewModel.profiles!.length,
+            itemBuilder: (context, index) {
+              final profile = viewModel.profiles![index];
+              return getProfileTile(profile);
+            },
+            separatorBuilder: (_, __) => const Divider(
+              thickness: 0.5,
+              height: 0.5,
+            ),
+          );
         },
       ),
     );
@@ -92,16 +81,10 @@ class ProfileListPage extends StatelessWidget {
 }
 
 class _ViewModel with EquatableMixin {
-  final Store<AppState> _store;
   final List<Profile>? profiles;
 
-  _ViewModel(this._store) : profiles = _store.state.profileState.profiles;
-
-  bool get isLoaded => profiles != null;
-
-  void loadData() {
-    _store.dispatch(GetProfilesAction());
-  }
+  _ViewModel(Store<AppState> store)
+      : profiles = store.state.profileState.profiles;
 
   @override
   List<Object?> get props => [profiles];

@@ -39,10 +39,12 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
         appBar: AppBar(
           title: const Text('Create Profile'),
           automaticallyImplyLeading: false,
-          leading: IconButton(
-            onPressed: () => store.dispatch(ClosePageAction()),
-            icon: const Icon(Icons.arrow_back_ios_new_rounded),
-          ),
+          leading: store.state.navigationState.previousRoutes.isNotEmpty
+              ? IconButton(
+                  onPressed: () => store.dispatch(ClosePageAction()),
+                  icon: const Icon(Icons.arrow_back_ios_new_rounded),
+                )
+              : null,
         ),
         body: SingleChildScrollView(
           child: Padding(
@@ -55,6 +57,7 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
                   CustomTextField(
                     label: 'Backend URL',
                     validator: isNotEmptyValidator,
+                    autocorrect: false,
                     onChanged: (value) {
                       value = value.trim();
                       if (value.endsWith('/')) {

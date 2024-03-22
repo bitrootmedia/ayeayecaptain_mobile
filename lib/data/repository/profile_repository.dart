@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:ayeayecaptain_mobile/app/utils/failure_or_result.dart';
 import 'package:ayeayecaptain_mobile/data/dto/profile_dto.dart';
@@ -21,16 +22,21 @@ class ProfileRepository implements domain.ProfileRepository {
 
   @override
   Future<FailureOrResult<String>> login(Profile profile) async {
-    final response = await _client.post(
-      '${profile.backendUrl}/api/auth/login/',
-      data: {
-        'username': profile.name,
-        'password': profile.password,
-      },
-    );
+    try {
+      final response = await _client.post(
+        '${profile.backendUrl}/api/auth/login/',
+        data: {
+          'username': profile.name,
+          'password': profile.password,
+        },
+      );
 
-    final token = (response.data as Map<String, dynamic>)['key'];
-    return FailureOrResult.success(token);
+      final token = (response.data as Map<String, dynamic>)['key'];
+      return FailureOrResult.success(token);
+    } on DioException catch (e) {
+      log(e.toString());
+      return FailureOrResult.failure();
+    }
   }
 
   @override
@@ -53,5 +59,10 @@ class ProfileRepository implements domain.ProfileRepository {
         .toList());
     await _storage.write(key: _profilesKey, value: profilesString);
     return FailureOrResult.success(null);
+  }
+
+  @override
+  Future<bool> hasProfile() async {
+    return (await _storage.read(key: _profilesKey)) != null;
   }
 }

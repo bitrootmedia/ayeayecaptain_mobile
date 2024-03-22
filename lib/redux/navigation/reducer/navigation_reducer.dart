@@ -1,4 +1,5 @@
 import 'package:ayeayecaptain_mobile/redux/navigation/actions.dart';
+import 'package:ayeayecaptain_mobile/redux/navigation/state/navigation_route_state.dart';
 import 'package:ayeayecaptain_mobile/redux/navigation/state/navigation_state.dart';
 import 'package:redux/redux.dart';
 
@@ -7,8 +8,12 @@ class NavigationReducer extends ReducerClass<NavigationState> {
   NavigationState call(NavigationState state, action) =>
       combineReducers<NavigationState>([
         TypedReducer(_closePage).call,
+        TypedReducer(_openProfileListPage).call,
         TypedReducer(_openCreateProfilePage).call,
         TypedReducer(_openAlertDialog).call,
+        TypedReducer(_openHomePage).call,
+        TypedReducer(_openProjectListPage).call,
+        TypedReducer(_openTaskListPage).call,
       ])(state, action);
 
   NavigationState _closePage(
@@ -19,6 +24,20 @@ class NavigationReducer extends ReducerClass<NavigationState> {
         previousRoutes:
             state.previousRoutes.sublist(0, state.previousRoutes.length - 1),
         currentRoute: state.previousRoutes.last,
+      );
+
+  NavigationState _openProfileListPage(
+    NavigationState state,
+    OpenProfileListPageAction action,
+  ) =>
+      state.copyWith(
+        previousRoutes: [
+          ...state.previousRoutes,
+          state.currentRoute,
+        ],
+        currentRoute: state.currentRoute.copyWith(
+          isProfileListPageOpened: true,
+        ),
       );
 
   NavigationState _openCreateProfilePage(
@@ -47,6 +66,45 @@ class NavigationReducer extends ReducerClass<NavigationState> {
         currentRoute: state.currentRoute.copyWith(
           isAlertDialogOpened: true,
           dialogConfig: action.dialogConfig,
+        ),
+      );
+
+  NavigationState _openHomePage(
+    NavigationState state,
+    OpenHomePageAction action,
+  ) =>
+      state.copyWith(
+        previousRoutes: [],
+        currentRoute: const NavigationRouteState(
+          isHomePageOpened: true,
+        ),
+      );
+
+  NavigationState _openProjectListPage(
+    NavigationState state,
+    OpenProjectListPageAction action,
+  ) =>
+      state.copyWith(
+        previousRoutes: [
+          ...state.previousRoutes,
+          state.currentRoute,
+        ],
+        currentRoute: state.currentRoute.copyWith(
+          isProjectListPageOpened: true,
+        ),
+      );
+
+  NavigationState _openTaskListPage(
+    NavigationState state,
+    OpenTaskListPageAction action,
+  ) =>
+      state.copyWith(
+        previousRoutes: [
+          ...state.previousRoutes,
+          state.currentRoute,
+        ],
+        currentRoute: state.currentRoute.copyWith(
+          isTaskListPageOpened: true,
         ),
       );
 }

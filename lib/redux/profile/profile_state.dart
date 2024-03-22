@@ -9,6 +9,8 @@ class ProfileState {
 
   ProfileState.initial() : profiles = null;
 
+  Profile? get selected => profiles?.singleWhere((e) => e.isSelected);
+
   ProfileState copyWith({
     List<Profile>? profiles,
   }) =>

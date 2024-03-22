@@ -5,4 +5,5 @@ abstract class ProfileRepository {
   Future<FailureOrResult<List<Profile>>> getProfiles();
   Future<FailureOrResult<void>> saveProfiles(List<Profile> profiles);
   Future<FailureOrResult<String>> login(Profile profile);
+  Future<bool> hasProfile();
 }

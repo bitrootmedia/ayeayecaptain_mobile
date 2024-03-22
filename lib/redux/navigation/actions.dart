@@ -4,6 +4,8 @@ abstract class NavigationAction {}
 
 class ClosePageAction implements NavigationAction {}
 
+class OpenProfileListPageAction implements NavigationAction {}
+
 class OpenCreateProfilePageAction implements NavigationAction {}
 
 class OpenAlertDialogAction implements NavigationAction {
@@ -11,3 +13,9 @@ class OpenAlertDialogAction implements NavigationAction {
 
   OpenAlertDialogAction(this.dialogConfig);
 }
+
+class OpenHomePageAction implements NavigationAction {}
+
+class OpenProjectListPageAction implements NavigationAction {}
+
+class OpenTaskListPageAction implements NavigationAction {}
