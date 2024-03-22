@@ -45,6 +45,7 @@ class ProfileListPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('My Profiles'),
+        centerTitle: true,
         automaticallyImplyLeading: false,
         leading: store.state.navigationState.previousRoutes.isNotEmpty
             ? IconButton(

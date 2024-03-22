@@ -47,6 +47,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Aye-aye Captain!'),
+        centerTitle: true,
         automaticallyImplyLeading: false,
         actions: [
           IconButton(

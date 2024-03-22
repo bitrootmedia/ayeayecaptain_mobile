@@ -18,6 +18,7 @@ class ProjectListPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Projects'),
+        centerTitle: true,
         automaticallyImplyLeading: false,
         leading: IconButton(
           onPressed: () => store.dispatch(ClosePageAction()),

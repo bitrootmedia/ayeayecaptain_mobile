@@ -38,6 +38,7 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Create Profile'),
+          centerTitle: true,
           automaticallyImplyLeading: false,
           leading: store.state.navigationState.previousRoutes.isNotEmpty
               ? IconButton(
