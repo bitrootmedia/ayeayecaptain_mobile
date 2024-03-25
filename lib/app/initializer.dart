@@ -24,20 +24,18 @@ import 'package:redux/redux.dart';
 import 'package:logging/logging.dart';
 import 'package:redux_logging/redux_logging.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:dio_smart_retry/dio_smart_retry.dart';
 
 Future<void> initialize() async {
   di.registerSingleton(await SharedPreferences.getInstance());
   di.registerSingleton(const FlutterSecureStorage());
 
-  di.registerSingleton(
-    Dio(
-      BaseOptions(
-        baseUrl: 'https://stage-api.ayeayecaptain.io/',
-        connectTimeout: const Duration(seconds: 60),
-        receiveTimeout: const Duration(seconds: 60),
-      ),
-    )..interceptors.add(LoggingInterceptor()),
-  );
+  final dio = Dio();
+  dio.interceptors.addAll([
+    LoggingInterceptor(),
+    RetryInterceptor(dio: dio),
+  ]);
+  di.registerSingleton(dio);
 
   di.registerSingleton<domain.ProfileRepository>(ProfileRepository(di(), di()));
   di.registerSingleton<domain.ProjectRepository>(ProjectRepository(di()));

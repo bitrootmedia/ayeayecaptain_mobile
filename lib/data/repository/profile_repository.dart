@@ -1,6 +1,6 @@
 import 'dart:convert';
-import 'dart:developer';
 
+import 'package:ayeayecaptain_mobile/app/utils/failure_codes.dart';
 import 'package:ayeayecaptain_mobile/app/utils/failure_or_result.dart';
 import 'package:ayeayecaptain_mobile/data/dto/profile_dto.dart';
 import 'package:ayeayecaptain_mobile/domain/profile/entity/profile.dart';
@@ -34,8 +34,35 @@ class ProfileRepository implements domain.ProfileRepository {
       final token = (response.data as Map<String, dynamic>)['key'];
       return FailureOrResult.success(token);
     } on DioException catch (e) {
-      log(e.toString());
-      return FailureOrResult.failure();
+      if (e.response?.data != null &&
+          e.response?.data is Map &&
+          e.response!.data['non_field_errors'] != null &&
+          e.response!.data['non_field_errors'] is List) {
+        return FailureOrResult.failure(
+          code: FailureCodes.nonFieldErrors,
+          message: (e.response!.data['non_field_errors'] as List).join(', '),
+        );
+      } else if (e.response?.statusMessage != null) {
+        return FailureOrResult.failure(
+          code: FailureCodes.unknownError,
+          message:
+              'Error: ${e.response!.statusMessage}\nResponse status code: ${e.response!.statusCode}',
+        );
+      } else if (e.message != null) {
+        return FailureOrResult.failure(
+          code: FailureCodes.unknownError,
+          message: 'Error: ${e.message}',
+        );
+      } else if (e.error != null) {
+        return FailureOrResult.failure(
+          code: FailureCodes.unknownError,
+          message: 'Error: ${e.error}',
+        );
+      }
+      return FailureOrResult.failure(
+        code: FailureCodes.unknownError,
+        message: 'An error has occurred.',
+      );
     }
   }
 

@@ -6,6 +6,7 @@ import 'package:ayeayecaptain_mobile/redux/navigation/actions.dart';
 import 'package:ayeayecaptain_mobile/redux/profile/actions.dart';
 import 'package:ayeayecaptain_mobile/redux/project/actions.dart';
 import 'package:ayeayecaptain_mobile/redux/task/actions.dart';
+import 'package:ayeayecaptain_mobile/ui/dialog/page/custom_alert_dialog.dart';
 import 'package:redux_epics/redux_epics.dart';
 
 class ProfileMiddleware extends EpicMiddleware<AppState> {
@@ -42,6 +43,10 @@ class ProfileMiddleware extends EpicMiddleware<AppState> {
               final newProfile =
                   action.profile.copyWith(token: request.result!);
               yield SaveProfilesAction([...profiles, newProfile]);
+            } else if (request.failure!.message.isNotEmpty) {
+              yield OpenAlertDialogAction(
+                DialogConfig(content: request.failure!.message),
+              );
             }
             yield HideLoaderAction();
           },
