@@ -23,18 +23,16 @@ class ProfileListPage extends StatelessWidget {
   }
 
   Widget getProfileTile(Profile profile) {
-    return GestureDetector(
+    return ListTile(
       onTap: () => _selectProfile(profile),
-      child: ListTile(
-        title: Text(profile.name),
-        subtitle: Text(profile.backendUrl),
-        trailing: profile.isSelected
-            ? const Icon(
-                Icons.check,
-                color: seedColor,
-              )
-            : null,
-      ),
+      title: Text(profile.name),
+      subtitle: Text(profile.backendUrl),
+      trailing: profile.isSelected
+          ? const Icon(
+              Icons.check,
+              color: seedColor,
+            )
+          : null,
     );
   }
 

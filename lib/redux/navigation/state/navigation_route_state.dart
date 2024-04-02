@@ -1,3 +1,4 @@
+import 'package:ayeayecaptain_mobile/domain/task/entity/task.dart';
 import 'package:ayeayecaptain_mobile/ui/dialog/page/custom_alert_dialog.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
@@ -11,6 +12,8 @@ class NavigationRouteState with EquatableMixin {
   final bool isHomePageOpened;
   final bool isProjectListPageOpened;
   final bool isTaskListPageOpened;
+  final bool isEditTaskPageOpened;
+  final Task? task;
 
   const NavigationRouteState({
     this.isProfileListPageOpened = false,
@@ -20,6 +23,8 @@ class NavigationRouteState with EquatableMixin {
     this.isHomePageOpened = false,
     this.isProjectListPageOpened = false,
     this.isTaskListPageOpened = false,
+    this.isEditTaskPageOpened = false,
+    this.task,
   });
 
   NavigationRouteState.initial()
@@ -29,7 +34,9 @@ class NavigationRouteState with EquatableMixin {
         dialogConfig = null,
         isHomePageOpened = false,
         isProjectListPageOpened = false,
-        isTaskListPageOpened = false;
+        isTaskListPageOpened = false,
+        isEditTaskPageOpened = false,
+        task = null;
 
   NavigationRouteState copyWith({
     bool? isProfileListPageOpened,
@@ -39,6 +46,8 @@ class NavigationRouteState with EquatableMixin {
     bool? isHomePageOpened,
     bool? isProjectListPageOpened,
     bool? isTaskListPageOpened,
+    bool? isEditTaskPageOpened,
+    Task? task,
   }) =>
       NavigationRouteState(
         isProfileListPageOpened:
@@ -51,6 +60,8 @@ class NavigationRouteState with EquatableMixin {
         isProjectListPageOpened:
             isProjectListPageOpened ?? this.isProjectListPageOpened,
         isTaskListPageOpened: isTaskListPageOpened ?? this.isTaskListPageOpened,
+        isEditTaskPageOpened: isEditTaskPageOpened ?? this.isEditTaskPageOpened,
+        task: task ?? this.task,
       );
 
   @override
@@ -61,6 +72,8 @@ class NavigationRouteState with EquatableMixin {
         dialogConfig,
         isHomePageOpened,
         isProjectListPageOpened,
-        isTaskListPageOpened
+        isTaskListPageOpened,
+        isEditTaskPageOpened,
+        task,
       ];
 }

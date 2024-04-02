@@ -7,6 +7,9 @@ import 'package:ayeayecaptain_mobile/domain/project/interface/project_repository
 import 'package:ayeayecaptain_mobile/data/repository/task_repository.dart';
 import 'package:ayeayecaptain_mobile/domain/task/interface/task_repository.dart'
     as domain;
+import 'package:ayeayecaptain_mobile/data/repository/file_repository.dart';
+import 'package:ayeayecaptain_mobile/domain/file/interface/file_repository.dart'
+    as domain;
 import 'package:ayeayecaptain_mobile/redux/navigation/state/navigation_route_state.dart';
 import 'package:ayeayecaptain_mobile/redux/navigation/state/navigation_state.dart';
 import 'package:ayeayecaptain_mobile/redux/profile/profile_middleware.dart';
@@ -40,6 +43,7 @@ Future<void> initialize() async {
   di.registerSingleton<domain.ProfileRepository>(ProfileRepository(di(), di()));
   di.registerSingleton<domain.ProjectRepository>(ProjectRepository(di()));
   di.registerSingleton<domain.TaskRepository>(TaskRepository(di()));
+  di.registerSingleton<domain.FileRepository>(FileRepository(di()));
 
   di.registerSingleton(
     Store<AppState>(

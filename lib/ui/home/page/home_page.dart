@@ -25,14 +25,12 @@ class _HomePageState extends State<HomePage> {
     required String title,
     required VoidCallback onTap,
   }) {
-    return GestureDetector(
+    return ListTile(
       onTap: onTap,
-      child: ListTile(
-        title: Text(title),
-        trailing: const Icon(
-          Icons.arrow_forward_ios_rounded,
-          size: 16,
-        ),
+      title: Text(title),
+      trailing: const Icon(
+        Icons.arrow_forward_ios_rounded,
+        size: 16,
       ),
     );
   }
@@ -56,20 +54,18 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            getMenuTile(
-              title: 'Projects',
-              onTap: () => store.dispatch(OpenProjectListPageAction()),
-            ),
-            divider,
-            getMenuTile(
-              title: 'Tasks',
-              onTap: () => store.dispatch(OpenTaskListPageAction()),
-            ),
-          ],
-        ),
+      body: ListView(
+        children: [
+          getMenuTile(
+            title: 'Projects',
+            onTap: () => store.dispatch(OpenProjectListPageAction()),
+          ),
+          divider,
+          getMenuTile(
+            title: 'Tasks',
+            onTap: () => store.dispatch(OpenTaskListPageAction()),
+          ),
+        ],
       ),
     );
   }

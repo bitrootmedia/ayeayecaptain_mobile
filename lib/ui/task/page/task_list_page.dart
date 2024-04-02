@@ -38,9 +38,10 @@ class TaskListPage extends StatelessWidget {
                       itemCount: viewModel.tasks!.length,
                       itemBuilder: (context, index) {
                         final task = viewModel.tasks![index];
-                        return Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: Text(task.title),
+                        return ListTile(
+                          title: Text(task.title),
+                          onTap: () =>
+                              store.dispatch(OpenEditTaskPageAction(task)),
                         );
                       },
                       separatorBuilder: (_, __) => const Divider(

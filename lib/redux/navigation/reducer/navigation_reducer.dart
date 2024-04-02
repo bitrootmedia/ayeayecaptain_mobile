@@ -14,6 +14,7 @@ class NavigationReducer extends ReducerClass<NavigationState> {
         TypedReducer(_openHomePage).call,
         TypedReducer(_openProjectListPage).call,
         TypedReducer(_openTaskListPage).call,
+        TypedReducer(_openEditTaskPage).call,
       ])(state, action);
 
   NavigationState _closePage(
@@ -105,6 +106,21 @@ class NavigationReducer extends ReducerClass<NavigationState> {
         ],
         currentRoute: state.currentRoute.copyWith(
           isTaskListPageOpened: true,
+        ),
+      );
+
+  NavigationState _openEditTaskPage(
+    NavigationState state,
+    OpenEditTaskPageAction action,
+  ) =>
+      state.copyWith(
+        previousRoutes: [
+          ...state.previousRoutes,
+          state.currentRoute,
+        ],
+        currentRoute: state.currentRoute.copyWith(
+          isEditTaskPageOpened: true,
+          task: action.task,
         ),
       );
 }

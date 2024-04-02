@@ -6,6 +6,7 @@ import 'package:ayeayecaptain_mobile/ui/home/page/home_page.dart';
 import 'package:ayeayecaptain_mobile/ui/profile/page/create_profile_page.dart';
 import 'package:ayeayecaptain_mobile/ui/profile/page/profile_list_page.dart';
 import 'package:ayeayecaptain_mobile/ui/project/page/project_list_page.dart';
+import 'package:ayeayecaptain_mobile/ui/task/page/edit_task_page.dart';
 import 'package:ayeayecaptain_mobile/ui/task/page/task_list_page.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
@@ -69,6 +70,14 @@ class AppRouterDelegate extends RouterDelegate<NavigationState>
                     key: ValueKey('createProfilePage'),
                     child: CreateProfilePage(),
                   ),
+                if (viewModel.route.isEditTaskPageOpened)
+                  MaterialPage(
+                    key: const ValueKey('editTaskPage'),
+                    child: EditTaskPage(
+                      task: viewModel.route.task!,
+                    ),
+                  ),
+                // must be last
                 if (viewModel.route.isAlertDialogOpened)
                   MaterialDialog(
                     builder: (context) => CustomAlertDialog(

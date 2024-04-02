@@ -13,7 +13,38 @@ abstract class AppTheme {
       foregroundColor: Colors.white,
     ),
     inputDecorationTheme: const InputDecorationTheme(
-      border: OutlineInputBorder(),
+      contentPadding: EdgeInsets.all(16),
+      fillColor: Colors.white,
+      filled: true,
+      enabledBorder: OutlineInputBorder(
+        borderSide: BorderSide(
+          color: Color(0xFFccd5e0),
+        ),
+      ),
+      disabledBorder: OutlineInputBorder(
+        borderSide: BorderSide(
+          color: Color(0xFFccd5e0),
+        ),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderSide: BorderSide(
+          color: seedColor,
+        ),
+      ),
+      errorBorder: OutlineInputBorder(
+        borderSide: BorderSide(
+          color: Colors.red,
+        ),
+      ),
+      focusedErrorBorder: OutlineInputBorder(
+        borderSide: BorderSide(
+          color: Colors.red,
+        ),
+      ),
+    ),
+    scaffoldBackgroundColor: const Color(0xFFf1f5f9),
+    listTileTheme: const ListTileThemeData(
+      tileColor: Colors.white,
     ),
   );
 }

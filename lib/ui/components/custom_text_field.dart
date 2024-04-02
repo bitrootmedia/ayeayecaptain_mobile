@@ -21,7 +21,6 @@ class CustomTextField extends StatelessWidget {
     return TextFormField(
       decoration: InputDecoration(
         label: Text(label),
-        contentPadding: const EdgeInsets.all(16),
       ),
       validator: validator,
       autovalidateMode: AutovalidateMode.onUserInteraction,
