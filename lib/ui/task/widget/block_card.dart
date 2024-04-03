@@ -18,40 +18,43 @@ class BlockCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Padding(
-          padding: EdgeInsets.only(top: 4),
-          child: Icon(
-            Icons.drag_indicator,
-            color: Color(0xff94a3b8),
-            size: 18,
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Padding(
+            padding: EdgeInsets.only(top: 4),
+            child: Icon(
+              Icons.drag_indicator,
+              color: Color(0xff94a3b8),
+              size: 18,
+            ),
           ),
-        ),
-        const SizedBox(width: 4),
-        Expanded(child: content),
-        const SizedBox(width: 4),
-        Column(
-          children: [
-            if (isEditing)
-              getButton(
-                icon: Icons.check,
-                onPressed: onSave,
-              ),
-            if (isEditing)
-              getButton(
-                icon: Icons.close,
-                onPressed: onDelete,
-              ),
-            if (!isEditing)
-              getButton(
-                icon: Icons.create,
-                onPressed: onEdit,
-              ),
-          ],
-        ),
-      ],
+          const SizedBox(width: 4),
+          Expanded(child: content),
+          const SizedBox(width: 4),
+          Column(
+            children: [
+              if (isEditing)
+                getButton(
+                  icon: Icons.check,
+                  onPressed: onSave,
+                ),
+              if (isEditing)
+                getButton(
+                  icon: Icons.close,
+                  onPressed: onDelete,
+                ),
+              if (!isEditing)
+                getButton(
+                  icon: Icons.create,
+                  onPressed: onEdit,
+                ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 

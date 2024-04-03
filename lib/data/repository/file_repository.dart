@@ -12,24 +12,29 @@ class FileRepository implements domain.FileRepository {
   FileRepository(this._client);
 
   @override
-  Future<FailureOrResult<void>> uploadFile({
+  Future<FailureOrResult<String>> uploadFile({
     required Profile profile,
     required String taskId,
     required File file,
   }) async {
     final fileName = file.path.split('/').last;
-    await _client.post(
+    final response = await _client.post(
       '${profile.backendUrl}/api/upload',
-      data: {
+      data: FormData.fromMap({
         'task_id': taskId,
-        fileName: await MultipartFile.fromFile(file.path, filename: fileName),
-      },
+        fileName: await MultipartFile.fromFile(
+          file.path,
+          filename: fileName,
+        ),
+      }),
       options: Options(headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'multipart/form-data',
         'Authorization': 'Token ${profile.token}',
       }),
     );
 
-    return FailureOrResult.success(null);
+    final path = (response.data as Map<String, dynamic>)['attachments']
+        .first['file_path'];
+    return FailureOrResult.success(path);
   }
 }

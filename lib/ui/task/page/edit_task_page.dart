@@ -1,9 +1,11 @@
 import 'package:ayeayecaptain_mobile/app/globals.dart';
 import 'package:ayeayecaptain_mobile/domain/block/entity/block.dart';
+import 'package:ayeayecaptain_mobile/domain/block/entity/image_block.dart';
 import 'package:ayeayecaptain_mobile/domain/block/entity/markdown_block.dart';
 import 'package:ayeayecaptain_mobile/domain/task/entity/task.dart';
 import 'package:ayeayecaptain_mobile/redux/app/app_state.dart';
 import 'package:ayeayecaptain_mobile/redux/navigation/actions.dart';
+import 'package:ayeayecaptain_mobile/ui/task/widget/image_block_card.dart';
 import 'package:ayeayecaptain_mobile/ui/task/widget/markdown_block_card.dart';
 import 'package:flutter/material.dart';
 import 'package:redux/redux.dart';
@@ -68,15 +70,20 @@ class _EditTaskPageState extends State<EditTaskPage> {
               ),
             ),
             const SizedBox(height: 16),
-            ..._blocks.map((e) => e is MarkdownBlock
-                ? Padding(
-                    padding: const EdgeInsets.only(bottom: 8),
-                    child: MarkdownBlockCard(
+            ..._blocks.map(
+              (e) => e is MarkdownBlock
+                  ? MarkdownBlockCard(
                       block: e,
                       onBlockChanged: _updateBlock,
-                    ),
-                  )
-                : const SizedBox.shrink()),
+                    )
+                  : e is ImageBlock
+                      ? ImageBlockCard(
+                          block: e,
+                          onBlockChanged: _updateBlock,
+                          taskId: widget.task.id,
+                        )
+                      : const SizedBox.shrink(),
+            ),
           ],
         ),
       ),
