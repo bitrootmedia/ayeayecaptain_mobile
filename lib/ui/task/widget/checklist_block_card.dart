@@ -29,6 +29,7 @@ class _ChecklistBlockCardState extends State<ChecklistBlockCard> {
   @override
   void initState() {
     _title = widget.block.title;
+    _elementsBeforeEdit = cloneElements(widget.block.elements);
     super.initState();
   }
 

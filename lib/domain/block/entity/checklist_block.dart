@@ -13,6 +13,11 @@ class ChecklistBlock extends Block {
     required this.elements,
   });
 
+  const ChecklistBlock.empty()
+      : title = '',
+        elements = const [],
+        super(type: 'checklist');
+
   @override
   ChecklistBlock copyWith({
     String? title,

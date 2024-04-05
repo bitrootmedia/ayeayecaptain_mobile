@@ -10,6 +10,10 @@ class ImageBlock extends Block {
     required this.path,
   });
 
+  const ImageBlock.empty()
+      : path = '',
+        super(type: 'image');
+
   @override
   ImageBlock copyWith({
     String? path,

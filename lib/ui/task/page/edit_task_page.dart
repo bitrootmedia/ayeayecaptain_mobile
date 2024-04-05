@@ -38,6 +38,12 @@ class _EditTaskPageState extends State<EditTaskPage> {
     });
   }
 
+  void _addBlock(Block block) {
+    setState(() {
+      widget.task.blocks.add(block);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final store = di<Store<AppState>>();
@@ -108,6 +114,23 @@ class _EditTaskPageState extends State<EditTaskPage> {
                             onBlockChanged: _updateBlock,
                             onBlockDeleted: _deleteBlock,
                           ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  IconButton(
+                    onPressed: () => _addBlock(const MarkdownBlock.empty()),
+                    icon: const Icon(Icons.format_align_left_rounded),
+                  ),
+                  IconButton(
+                    onPressed: () => _addBlock(const ImageBlock.empty()),
+                    icon: const Icon(Icons.image),
+                  ),
+                  IconButton(
+                    onPressed: () => _addBlock(const ChecklistBlock.empty()),
+                    icon: const Icon(Icons.checklist_rounded),
+                  ),
+                ],
               ),
             ],
           ),

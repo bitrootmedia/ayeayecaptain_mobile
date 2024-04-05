@@ -10,6 +10,10 @@ class MarkdownBlock extends Block {
     required this.content,
   });
 
+  const MarkdownBlock.empty()
+      : content = '',
+        super(type: 'markdown');
+
   @override
   MarkdownBlock copyWith({
     String? content,
