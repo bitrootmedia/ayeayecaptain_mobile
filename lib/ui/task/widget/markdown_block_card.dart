@@ -48,6 +48,12 @@ class _MarkdownBlockCardState extends State<MarkdownBlockCard> {
           _isEditing = false;
         });
       },
+      onCancel: () {
+        setState(() {
+          _value = widget.block.content;
+          _isEditing = false;
+        });
+      },
       onDelete: () {},
       content: _isEditing
           ? MarkdownTextInput(
@@ -63,7 +69,7 @@ class _MarkdownBlockCardState extends State<MarkdownBlockCard> {
               ),
               child: Padding(
                 padding: const EdgeInsets.all(12),
-                child: MarkdownBody(data: _value),
+                child: MarkdownBody(data: widget.block.content),
               ),
             ),
     );

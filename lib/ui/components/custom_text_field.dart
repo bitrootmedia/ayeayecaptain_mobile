@@ -6,6 +6,7 @@ class CustomTextField extends StatelessWidget {
   final bool obscureText;
   final Function(String)? onChanged;
   final bool autocorrect;
+  final String? initialValue;
 
   const CustomTextField({
     super.key,
@@ -14,6 +15,7 @@ class CustomTextField extends StatelessWidget {
     this.obscureText = false,
     this.onChanged,
     this.autocorrect = true,
+    this.initialValue,
   });
 
   @override
@@ -27,6 +29,7 @@ class CustomTextField extends StatelessWidget {
       obscureText: obscureText,
       onChanged: onChanged,
       autocorrect: autocorrect,
+      initialValue: initialValue,
     );
   }
 }

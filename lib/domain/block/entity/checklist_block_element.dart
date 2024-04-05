@@ -1,12 +1,13 @@
-import 'package:flutter/foundation.dart';
-
-@immutable
 class ChecklistBlockElement {
-  final String label;
-  final bool checked;
+  String label;
+  bool checked;
 
-  const ChecklistBlockElement({
+  ChecklistBlockElement({
     required this.label,
     required this.checked,
   });
+
+  ChecklistBlockElement.empty()
+      : label = '',
+        checked = false;
 }

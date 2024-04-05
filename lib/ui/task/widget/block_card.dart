@@ -5,6 +5,7 @@ class BlockCard extends StatelessWidget {
   final bool isEditing;
   final VoidCallback onEdit;
   final VoidCallback onSave;
+  final VoidCallback onCancel;
   final VoidCallback onDelete;
 
   const BlockCard({
@@ -13,37 +14,51 @@ class BlockCard extends StatelessWidget {
     required this.isEditing,
     required this.onEdit,
     required this.onSave,
+    required this.onCancel,
     required this.onDelete,
   });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.only(bottom: 12),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Padding(
-            padding: EdgeInsets.only(top: 4),
-            child: Icon(
-              Icons.drag_indicator,
-              color: Color(0xff94a3b8),
-              size: 18,
+          const SizedBox(
+            height: 26,
+            width: 34,
+            child: Center(
+              child: Icon(
+                Icons.drag_indicator,
+                color: Color(0xff94a3b8),
+                size: 22,
+              ),
             ),
           ),
-          const SizedBox(width: 4),
           Expanded(child: content),
           const SizedBox(width: 4),
           Column(
             children: [
               if (isEditing)
-                getButton(
-                  icon: Icons.check,
-                  onPressed: onSave,
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: getButton(
+                    icon: Icons.check,
+                    onPressed: onSave,
+                  ),
+                ),
+              if (isEditing)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: getButton(
+                    icon: Icons.close,
+                    onPressed: onCancel,
+                  ),
                 ),
               if (isEditing)
                 getButton(
-                  icon: Icons.close,
+                  icon: Icons.delete,
                   onPressed: onDelete,
                 ),
               if (!isEditing)
@@ -53,6 +68,7 @@ class BlockCard extends StatelessWidget {
                 ),
             ],
           ),
+          const SizedBox(width: 4),
         ],
       ),
     );
@@ -63,14 +79,14 @@ class BlockCard extends StatelessWidget {
     required VoidCallback onPressed,
   }) {
     return SizedBox(
-      width: 30,
-      height: 30,
+      width: 40,
+      height: 40,
       child: Center(
         child: IconButton(
           onPressed: onPressed,
           icon: Icon(
             icon,
-            size: 14,
+            size: 18,
           ),
         ),
       ),

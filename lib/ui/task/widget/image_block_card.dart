@@ -92,6 +92,12 @@ class _ImageBlockCardState extends State<ImageBlockCard> {
           _isEditing = false;
         });
       },
+      onCancel: () {
+        setState(() {
+          _newImagePath = null;
+          _isEditing = false;
+        });
+      },
       onDelete: () {},
       content: Container(
         decoration: BoxDecoration(
@@ -127,33 +133,9 @@ class _ImageBlockCardState extends State<ImageBlockCard> {
                       if (_newImagePath != null)
                         Padding(
                           padding: const EdgeInsets.only(top: 8),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              _getImage(
-                                '${profile.backendUrl}/$_newImagePath',
-                                cacheHeight: 60,
-                              ),
-                              const SizedBox(width: 4),
-                              SizedBox(
-                                width: 30,
-                                height: 30,
-                                child: Center(
-                                  child: IconButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        _newImagePath = null;
-                                      });
-                                    },
-                                    icon: const Icon(
-                                      Icons.close,
-                                      size: 14,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
+                          child: _getImage(
+                            '${profile.backendUrl}/$_newImagePath',
+                            cacheHeight: 60,
                           ),
                         ),
                     ],

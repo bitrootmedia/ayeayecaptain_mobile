@@ -1,10 +1,13 @@
 import 'package:ayeayecaptain_mobile/app/globals.dart';
 import 'package:ayeayecaptain_mobile/domain/block/entity/block.dart';
+import 'package:ayeayecaptain_mobile/domain/block/entity/checklist_block.dart';
 import 'package:ayeayecaptain_mobile/domain/block/entity/image_block.dart';
 import 'package:ayeayecaptain_mobile/domain/block/entity/markdown_block.dart';
 import 'package:ayeayecaptain_mobile/domain/task/entity/task.dart';
 import 'package:ayeayecaptain_mobile/redux/app/app_state.dart';
 import 'package:ayeayecaptain_mobile/redux/navigation/actions.dart';
+import 'package:ayeayecaptain_mobile/ui/components/unfocusable.dart';
+import 'package:ayeayecaptain_mobile/ui/task/widget/checklist_block_card.dart';
 import 'package:ayeayecaptain_mobile/ui/task/widget/image_block_card.dart';
 import 'package:ayeayecaptain_mobile/ui/task/widget/markdown_block_card.dart';
 import 'package:flutter/material.dart';
@@ -41,50 +44,69 @@ class _EditTaskPageState extends State<EditTaskPage> {
   Widget build(BuildContext context) {
     final store = di<Store<AppState>>();
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Task Details'),
-        centerTitle: true,
-        automaticallyImplyLeading: false,
-        leading: IconButton(
-          onPressed: () => store.dispatch(ClosePageAction()),
-          icon: const Icon(Icons.arrow_back_ios_new_rounded),
-        ),
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.save),
+    return Unfocusable(
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Task Details'),
+          centerTitle: true,
+          automaticallyImplyLeading: false,
+          leading: IconButton(
+            onPressed: () => store.dispatch(ClosePageAction()),
+            icon: const Icon(Icons.arrow_back_ios_new_rounded),
           ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              widget.task.title,
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-            const SizedBox(height: 16),
-            ..._blocks.map(
-              (e) => e is MarkdownBlock
-                  ? MarkdownBlockCard(
-                      block: e,
-                      onBlockChanged: _updateBlock,
-                    )
-                  : e is ImageBlock
-                      ? ImageBlockCard(
-                          block: e,
-                          onBlockChanged: _updateBlock,
-                          taskId: widget.task.id,
-                        )
-                      : const SizedBox.shrink(),
+          actions: [
+            IconButton(
+              onPressed: () {},
+              icon: const Icon(Icons.save),
             ),
           ],
+        ),
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(vertical: 24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Text(
+                  widget.task.title,
+                  style: const TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 24),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                child: Text(
+                  'Blocks',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              ..._blocks.map(
+                (e) => e is MarkdownBlock
+                    ? MarkdownBlockCard(
+                        block: e,
+                        onBlockChanged: _updateBlock,
+                      )
+                    : e is ImageBlock
+                        ? ImageBlockCard(
+                            block: e,
+                            onBlockChanged: _updateBlock,
+                            taskId: widget.task.id,
+                          )
+                        : ChecklistBlockCard(
+                            block: e as ChecklistBlock,
+                            onBlockChanged: _updateBlock,
+                          ),
+              ),
+            ],
+          ),
         ),
       ),
     );
