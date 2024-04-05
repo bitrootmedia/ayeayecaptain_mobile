@@ -26,17 +26,15 @@ class EditTaskPage extends StatefulWidget {
 }
 
 class _EditTaskPageState extends State<EditTaskPage> {
-  late List<Block> _blocks;
-
-  @override
-  void initState() {
-    _blocks = widget.task.blocks;
-    super.initState();
-  }
-
   void _updateBlock(Block oldBlock, Block newBlock) {
     setState(() {
-      _blocks[_blocks.indexOf(oldBlock)] = newBlock;
+      widget.task.blocks[widget.task.blocks.indexOf(oldBlock)] = newBlock;
+    });
+  }
+
+  void _deleteBlock(Block block) {
+    setState(() {
+      widget.task.blocks.remove(block);
     });
   }
 
@@ -88,21 +86,27 @@ class _EditTaskPageState extends State<EditTaskPage> {
                 ),
               ),
               const SizedBox(height: 16),
-              ..._blocks.map(
+              ...widget.task.blocks.map(
                 (e) => e is MarkdownBlock
                     ? MarkdownBlockCard(
+                        key: ObjectKey(e),
                         block: e,
                         onBlockChanged: _updateBlock,
+                        onBlockDeleted: _deleteBlock,
                       )
                     : e is ImageBlock
                         ? ImageBlockCard(
+                            key: ObjectKey(e),
                             block: e,
                             onBlockChanged: _updateBlock,
+                            onBlockDeleted: _deleteBlock,
                             taskId: widget.task.id,
                           )
                         : ChecklistBlockCard(
+                            key: ObjectKey(e),
                             block: e as ChecklistBlock,
                             onBlockChanged: _updateBlock,
+                            onBlockDeleted: _deleteBlock,
                           ),
               ),
             ],

@@ -15,12 +15,14 @@ final _imagePicker = ImagePicker();
 class ImageBlockCard extends StatefulWidget {
   final ImageBlock block;
   final void Function(Block, Block) onBlockChanged;
+  final void Function(Block) onBlockDeleted;
   final String taskId;
 
   const ImageBlockCard({
     super.key,
     required this.block,
     required this.onBlockChanged,
+    required this.onBlockDeleted,
     required this.taskId,
   });
 
@@ -98,7 +100,9 @@ class _ImageBlockCardState extends State<ImageBlockCard> {
           _isEditing = false;
         });
       },
-      onDelete: () {},
+      onDelete: () {
+        widget.onBlockDeleted(widget.block);
+      },
       content: Container(
         decoration: BoxDecoration(
           color: Colors.white,
@@ -107,7 +111,7 @@ class _ImageBlockCardState extends State<ImageBlockCard> {
         child: Padding(
           padding: const EdgeInsets.all(12),
           child: SizedBox(
-            height: 150,
+            height: widget.block.path.isEmpty && !_isEditing ? null : 150,
             child: _isEditing
                 ? Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -141,11 +145,10 @@ class _ImageBlockCardState extends State<ImageBlockCard> {
                     ],
                   )
                 : widget.block.path.isEmpty
-                    ? const Center(
-                        child: Text(
-                          'No image',
-                          style: TextStyle(color: Colors.grey),
-                        ),
+                    ? const Text(
+                        'No image',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Colors.grey),
                       )
                     : _getImage(
                         '${profile.backendUrl}/${widget.block.path}',

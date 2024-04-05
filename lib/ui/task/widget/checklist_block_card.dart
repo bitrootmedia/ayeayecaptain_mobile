@@ -8,11 +8,13 @@ import 'package:flutter/material.dart';
 class ChecklistBlockCard extends StatefulWidget {
   final ChecklistBlock block;
   final void Function(Block, Block) onBlockChanged;
+  final void Function(Block) onBlockDeleted;
 
   const ChecklistBlockCard({
     super.key,
     required this.block,
     required this.onBlockChanged,
+    required this.onBlockDeleted,
   });
 
   @override
@@ -39,6 +41,9 @@ class _ChecklistBlockCardState extends State<ChecklistBlockCard> {
             ))
         .toList();
   }
+
+  bool get noChecklist =>
+      widget.block.title.isEmpty && widget.block.elements.isEmpty;
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +78,9 @@ class _ChecklistBlockCardState extends State<ChecklistBlockCard> {
           ),
         );
       },
-      onDelete: () {},
+      onDelete: () {
+        widget.onBlockDeleted(widget.block);
+      },
       content: Container(
         decoration: BoxDecoration(
           color: Colors.white,
@@ -127,31 +134,37 @@ class _ChecklistBlockCardState extends State<ChecklistBlockCard> {
                     ),
                   ],
                 )
-              : Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      widget.block.title,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                      ),
+              : noChecklist
+                  ? const Text(
+                      'No checklist',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.grey),
+                    )
+                  : Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          widget.block.title,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        ...widget.block.elements.map(
+                          (e) => checklistItem(
+                              title: e.label,
+                              isChecked: e.checked,
+                              onChanged: (value) {
+                                setState(() {
+                                  if (value != null) {
+                                    e.checked = value;
+                                  }
+                                });
+                              }),
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 6),
-                    ...widget.block.elements.map(
-                      (e) => checklistItem(
-                          title: e.label,
-                          isChecked: e.checked,
-                          onChanged: (value) {
-                            setState(() {
-                              if (value != null) {
-                                e.checked = value;
-                              }
-                            });
-                          }),
-                    ),
-                  ],
-                ),
         ),
       ),
     );
