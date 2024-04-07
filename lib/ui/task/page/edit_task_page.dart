@@ -27,28 +27,42 @@ class EditTaskPage extends StatefulWidget {
 }
 
 class _EditTaskPageState extends State<EditTaskPage> {
+  final store = di<Store<AppState>>();
+  late Task clonedTask;
+
+  @override
+  void initState() {
+    clonedTask = widget.task.clone();
+    super.initState();
+  }
+
   void _updateBlock(Block oldBlock, Block newBlock) {
     setState(() {
-      widget.task.blocks[widget.task.blocks.indexOf(oldBlock)] = newBlock;
+      clonedTask.blocks[clonedTask.blocks.indexOf(oldBlock)] = newBlock;
     });
   }
 
   void _deleteBlock(Block block) {
     setState(() {
-      widget.task.blocks.remove(block);
+      clonedTask.blocks.remove(block);
     });
   }
 
   void _addBlock(Block block) {
     setState(() {
-      widget.task.blocks.add(block);
+      clonedTask.blocks.add(block);
     });
+  }
+
+  void _save() {
+    store.dispatch(PartiallyUpdateTaskAction(
+      clonedTask.id,
+      clonedTask.blocks,
+    ));
   }
 
   @override
   Widget build(BuildContext context) {
-    final store = di<Store<AppState>>();
-
     return Unfocusable(
       child: Scaffold(
         appBar: AppBar(
@@ -61,10 +75,7 @@ class _EditTaskPageState extends State<EditTaskPage> {
           ),
           actions: [
             IconButton(
-              onPressed: () => store.dispatch(PartiallyUpdateTaskAction(
-                widget.task.id,
-                widget.task.blocks,
-              )),
+              onPressed: _save,
               icon: const Icon(Icons.save),
             ),
           ],
@@ -77,7 +88,7 @@ class _EditTaskPageState extends State<EditTaskPage> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Text(
-                  widget.task.title,
+                  clonedTask.title,
                   style: const TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.w700,
@@ -96,7 +107,7 @@ class _EditTaskPageState extends State<EditTaskPage> {
                 ),
               ),
               const SizedBox(height: 16),
-              ...widget.task.blocks.map(
+              ...clonedTask.blocks.map(
                 (e) => e is MarkdownBlock
                     ? MarkdownBlockCard(
                         key: ObjectKey(e),
@@ -110,7 +121,7 @@ class _EditTaskPageState extends State<EditTaskPage> {
                             block: e,
                             onBlockChanged: _updateBlock,
                             onBlockDeleted: _deleteBlock,
-                            taskId: widget.task.id,
+                            taskId: clonedTask.id,
                           )
                         : ChecklistBlockCard(
                             key: ObjectKey(e),

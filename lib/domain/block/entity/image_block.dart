@@ -15,6 +15,12 @@ class ImageBlock extends Block {
         super(type: 'image');
 
   @override
+  ImageBlock clone() => ImageBlock(
+        type: type,
+        path: path,
+      );
+
+  @override
   ImageBlock copyWith({
     String? path,
   }) =>

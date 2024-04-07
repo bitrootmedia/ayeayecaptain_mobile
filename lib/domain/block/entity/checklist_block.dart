@@ -19,6 +19,13 @@ class ChecklistBlock extends Block {
         super(type: 'checklist');
 
   @override
+  ChecklistBlock clone() => ChecklistBlock(
+        type: type,
+        title: title,
+        elements: elements.map((e) => e.clone()).toList(),
+      );
+
+  @override
   ChecklistBlock copyWith({
     String? title,
     List<ChecklistBlockElement>? elements,

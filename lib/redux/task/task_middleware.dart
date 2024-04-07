@@ -55,6 +55,7 @@ class TaskMiddleware extends EpicMiddleware<AppState> {
             );
 
             if (request.wasSuccessful) {
+              yield UpdateLocalTaskAction(request.result!);
               yield ClosePageAction();
             } else {
               yield OpenAlertDialogAction(

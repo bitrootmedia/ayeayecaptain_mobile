@@ -22,3 +22,9 @@ class PartiallyUpdateTaskAction {
 
   PartiallyUpdateTaskAction(this.taskId, this.blocks);
 }
+
+class UpdateLocalTaskAction {
+  final Task task;
+
+  UpdateLocalTaskAction(this.task);
+}

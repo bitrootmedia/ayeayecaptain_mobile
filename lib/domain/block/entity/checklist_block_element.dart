@@ -10,4 +10,9 @@ class ChecklistBlockElement {
   ChecklistBlockElement.empty()
       : label = '',
         checked = false;
+
+  ChecklistBlockElement clone() => ChecklistBlockElement(
+        label: label,
+        checked: checked,
+      );
 }

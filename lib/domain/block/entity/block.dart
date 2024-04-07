@@ -4,4 +4,6 @@ abstract class Block {
   const Block({required this.type});
 
   Block copyWith();
+
+  Block clone();
 }

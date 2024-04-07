@@ -30,13 +30,13 @@ class TaskRepository implements domain.TaskRepository {
   }
 
   @override
-  Future<FailureOrResult<void>> partiallyUpdateTask({
+  Future<FailureOrResult<Task>> partiallyUpdateTask({
     required Profile profile,
     required String taskId,
     required List<Block> blocks,
   }) async {
     try {
-      await _client.patch(
+      final response = await _client.patch(
         '${profile.backendUrl}/api/task/$taskId',
         data: {
           'blocks': blocks
@@ -49,7 +49,9 @@ class TaskRepository implements domain.TaskRepository {
           'Authorization': 'Token ${profile.token}',
         }),
       );
-      return FailureOrResult.success(null);
+
+      final task = TaskDto.fromJson(response.data as Map<String, dynamic>);
+      return FailureOrResult.success(task.toDomain());
     } on DioException catch (e) {
       return FailureOrResult.failure(
         code: FailureCodes.unknownError,

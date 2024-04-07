@@ -9,6 +9,7 @@ class TaskReducer extends ReducerClass<TaskState> {
     return combineReducers<TaskState>([
       TypedReducer(_updateTasks).call,
       TypedReducer(_resetTasks).call,
+      TypedReducer(_updateLocalTask).call,
     ])(state, action);
   }
 
@@ -18,6 +19,16 @@ class TaskReducer extends ReducerClass<TaskState> {
   ) =>
       state.copyWith(
         tasks: Nullable(action.tasks),
+      );
+
+  TaskState _updateLocalTask(
+    TaskState state,
+    UpdateLocalTaskAction action,
+  ) =>
+      state.copyWith(
+        tasks: Nullable(state.tasks!
+            .map((e) => e.id == action.task.id ? action.task : e)
+            .toList()),
       );
 
   TaskState _resetTasks(

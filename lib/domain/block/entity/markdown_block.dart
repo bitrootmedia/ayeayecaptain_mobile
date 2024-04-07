@@ -15,6 +15,12 @@ class MarkdownBlock extends Block {
         super(type: 'markdown');
 
   @override
+  MarkdownBlock clone() => MarkdownBlock(
+        type: type,
+        content: content,
+      );
+
+  @override
   MarkdownBlock copyWith({
     String? content,
   }) =>

@@ -12,4 +12,10 @@ class Task {
     required this.title,
     required this.blocks,
   });
+
+  Task clone() => Task(
+        id: id,
+        title: title,
+        blocks: blocks.map((e) => e.clone()).toList(),
+      );
 }
