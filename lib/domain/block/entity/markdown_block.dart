@@ -10,7 +10,8 @@ class MarkdownBlock extends Block {
     required this.content,
   });
 
-  const MarkdownBlock.empty()
+  // ignore: prefer_const_constructors_in_immutables
+  MarkdownBlock.empty()
       : content = '',
         super(type: 'markdown');
 

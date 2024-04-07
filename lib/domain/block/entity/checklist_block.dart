@@ -13,9 +13,10 @@ class ChecklistBlock extends Block {
     required this.elements,
   });
 
-  const ChecklistBlock.empty()
+  // ignore: prefer_const_constructors_in_immutables
+  ChecklistBlock.empty()
       : title = '',
-        elements = const [],
+        elements = [],
         super(type: 'checklist');
 
   bool get isEmpty => title.isEmpty && elements.isEmpty;

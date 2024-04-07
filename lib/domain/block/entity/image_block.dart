@@ -10,7 +10,8 @@ class ImageBlock extends Block {
     required this.path,
   });
 
-  const ImageBlock.empty()
+  // ignore: prefer_const_constructors_in_immutables
+  ImageBlock.empty()
       : path = '',
         super(type: 'image');
 

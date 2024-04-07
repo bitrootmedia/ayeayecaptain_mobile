@@ -157,15 +157,15 @@ class _EditTaskPageState extends State<EditTaskPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   IconButton(
-                    onPressed: () => _addBlock(const MarkdownBlock.empty()),
+                    onPressed: () => _addBlock(MarkdownBlock.empty()),
                     icon: const Icon(Icons.format_align_left_rounded),
                   ),
                   IconButton(
-                    onPressed: () => _addBlock(const ImageBlock.empty()),
+                    onPressed: () => _addBlock(ImageBlock.empty()),
                     icon: const Icon(Icons.image),
                   ),
                   IconButton(
-                    onPressed: () => _addBlock(const ChecklistBlock.empty()),
+                    onPressed: () => _addBlock(ChecklistBlock.empty()),
                     icon: const Icon(Icons.checklist_rounded),
                   ),
                 ],
