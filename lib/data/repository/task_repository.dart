@@ -1,9 +1,7 @@
 import 'package:ayeayecaptain_mobile/app/utils/failure_codes.dart';
 import 'package:ayeayecaptain_mobile/app/utils/failure_or_result.dart';
-import 'package:ayeayecaptain_mobile/data/dto/attachment_dto.dart';
 import 'package:ayeayecaptain_mobile/data/dto/blocks/block_dto.dart';
 import 'package:ayeayecaptain_mobile/data/dto/task_dto.dart';
-import 'package:ayeayecaptain_mobile/domain/attachment/entity/attachment.dart';
 import 'package:ayeayecaptain_mobile/domain/block/entity/block.dart';
 import 'package:ayeayecaptain_mobile/domain/profile/entity/profile.dart';
 import 'package:ayeayecaptain_mobile/domain/task/interface/task_repository.dart'
@@ -61,31 +59,5 @@ class TaskRepository implements domain.TaskRepository {
             'Response status message: ${e.response?.statusMessage}, code ${e.response?.statusCode};\nError message: ${e.message};\nError: ${e.error}',
       );
     }
-  }
-
-  @override
-  Future<FailureOrResult<List<Attachment>>> getAttachments({
-    required Profile profile,
-    required String taskId,
-    required int page,
-    int pageSize = 10,
-  }) async {
-    final response = await _client.get(
-      '${profile.backendUrl}/api/attachments',
-      queryParameters: {
-        'task': taskId,
-        'page': page,
-        'page_size': pageSize,
-      },
-      options: Options(headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Token ${profile.token}',
-      }),
-    );
-
-    final attachmentsDto = (response.data['results'] as List)
-        .map((e) => AttachmentDto.fromJson(e as Map<String, dynamic>));
-    return FailureOrResult.success(
-        attachmentsDto.map((e) => e.toDomain()).toList());
   }
 }

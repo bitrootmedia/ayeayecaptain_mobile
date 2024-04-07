@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 class Project {
   final String id;
   final String title;
-  final String description;
+  final String? description;
   final String? backgroundImage;
   final int progress;
   final String? tag;

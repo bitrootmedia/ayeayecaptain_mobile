@@ -9,7 +9,7 @@ part of 'project_dto.dart';
 ProjectDto _$ProjectDtoFromJson(Map<String, dynamic> json) => ProjectDto(
       json['id'] as String,
       json['title'] as String,
-      json['description'] as String,
+      json['description'] as String?,
       json['background_image'] as String?,
       json['progress'] as int,
       json['tag'] as String?,

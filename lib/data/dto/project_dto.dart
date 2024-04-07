@@ -7,7 +7,7 @@ part 'project_dto.g.dart';
 class ProjectDto {
   final String id;
   final String title;
-  final String description;
+  final String? description;
   @JsonKey(name: 'background_image')
   final String? backgroundImage;
   final int progress;
