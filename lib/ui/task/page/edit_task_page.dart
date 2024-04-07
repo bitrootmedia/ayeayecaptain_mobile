@@ -60,6 +60,9 @@ class _EditTaskPageState extends State<EditTaskPage> {
   void _reorderBlocks(int oldIndex, int newIndex) {
     setState(() {
       final block = _clonedTask.blocks.removeAt(oldIndex);
+      if (oldIndex < newIndex) {
+        newIndex--;
+      }
       _clonedTask.blocks.insert(newIndex, block);
     });
   }
