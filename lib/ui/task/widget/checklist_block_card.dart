@@ -9,12 +9,14 @@ class ChecklistBlockCard extends StatefulWidget {
   final ChecklistBlock block;
   final void Function(Block, Block) onBlockChanged;
   final void Function(Block) onBlockDeleted;
+  final bool? isEditing;
 
   const ChecklistBlockCard({
     super.key,
     required this.block,
     required this.onBlockChanged,
     required this.onBlockDeleted,
+    this.isEditing,
   });
 
   @override
@@ -30,6 +32,9 @@ class _ChecklistBlockCardState extends State<ChecklistBlockCard> {
   void initState() {
     _title = widget.block.title;
     _elementsBeforeEdit = cloneElements(widget.block.elements);
+    if (widget.isEditing != null) {
+      _isEditing = widget.isEditing!;
+    }
     super.initState();
   }
 
@@ -42,9 +47,6 @@ class _ChecklistBlockCardState extends State<ChecklistBlockCard> {
             ))
         .toList();
   }
-
-  bool get noChecklist =>
-      widget.block.title.isEmpty && widget.block.elements.isEmpty;
 
   @override
   Widget build(BuildContext context) {
@@ -135,7 +137,7 @@ class _ChecklistBlockCardState extends State<ChecklistBlockCard> {
                     ),
                   ],
                 )
-              : noChecklist
+              : widget.block.isEmpty
                   ? const Text(
                       'No checklist',
                       textAlign: TextAlign.center,

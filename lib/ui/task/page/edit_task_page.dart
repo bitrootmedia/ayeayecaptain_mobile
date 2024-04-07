@@ -28,43 +28,46 @@ class EditTaskPage extends StatefulWidget {
 
 class _EditTaskPageState extends State<EditTaskPage> {
   final store = di<Store<AppState>>();
-  late Task clonedTask;
+  late Task _clonedTask;
+  bool _isEditingNewBlockOnRebuild = true;
 
   @override
   void initState() {
-    clonedTask = widget.task.clone();
+    _clonedTask = widget.task.clone();
     super.initState();
   }
 
   void _updateBlock(Block oldBlock, Block newBlock) {
     setState(() {
-      clonedTask.blocks[clonedTask.blocks.indexOf(oldBlock)] = newBlock;
+      _isEditingNewBlockOnRebuild = false;
+      _clonedTask.blocks[_clonedTask.blocks.indexOf(oldBlock)] = newBlock;
     });
   }
 
   void _deleteBlock(Block block) {
     setState(() {
-      clonedTask.blocks.remove(block);
+      _clonedTask.blocks.remove(block);
     });
   }
 
   void _addBlock(Block block) {
     setState(() {
-      clonedTask.blocks.add(block);
+      _isEditingNewBlockOnRebuild = true;
+      _clonedTask.blocks.add(block);
     });
   }
 
   void _reorderBlocks(int oldIndex, int newIndex) {
     setState(() {
-      final block = clonedTask.blocks.removeAt(oldIndex);
-      clonedTask.blocks.insert(newIndex, block);
+      final block = _clonedTask.blocks.removeAt(oldIndex);
+      _clonedTask.blocks.insert(newIndex, block);
     });
   }
 
   void _save() {
     store.dispatch(PartiallyUpdateTaskAction(
-      clonedTask.id,
-      clonedTask.blocks,
+      _clonedTask.id,
+      _clonedTask.blocks,
     ));
   }
 
@@ -95,7 +98,7 @@ class _EditTaskPageState extends State<EditTaskPage> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Text(
-                  clonedTask.title,
+                  _clonedTask.title,
                   style: const TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.w700,
@@ -118,7 +121,7 @@ class _EditTaskPageState extends State<EditTaskPage> {
                 onReorder: _reorderBlocks,
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
-                children: clonedTask.blocks
+                children: _clonedTask.blocks
                     .map(
                       (e) => e is MarkdownBlock
                           ? MarkdownBlockCard(
@@ -126,6 +129,8 @@ class _EditTaskPageState extends State<EditTaskPage> {
                               block: e,
                               onBlockChanged: _updateBlock,
                               onBlockDeleted: _deleteBlock,
+                              isEditing: e.content.isEmpty &&
+                                  _isEditingNewBlockOnRebuild,
                             )
                           : e is ImageBlock
                               ? ImageBlockCard(
@@ -133,13 +138,17 @@ class _EditTaskPageState extends State<EditTaskPage> {
                                   block: e,
                                   onBlockChanged: _updateBlock,
                                   onBlockDeleted: _deleteBlock,
-                                  taskId: clonedTask.id,
+                                  taskId: _clonedTask.id,
+                                  isEditing: e.path.isEmpty &&
+                                      _isEditingNewBlockOnRebuild,
                                 )
                               : ChecklistBlockCard(
                                   key: ObjectKey(e),
                                   block: e as ChecklistBlock,
                                   onBlockChanged: _updateBlock,
                                   onBlockDeleted: _deleteBlock,
+                                  isEditing:
+                                      e.isEmpty && _isEditingNewBlockOnRebuild,
                                 ),
                     )
                     .toList(),

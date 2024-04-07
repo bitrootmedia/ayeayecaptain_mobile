@@ -10,12 +10,14 @@ class MarkdownBlockCard extends StatefulWidget {
   final MarkdownBlock block;
   final void Function(Block, Block) onBlockChanged;
   final void Function(Block) onBlockDeleted;
+  final bool? isEditing;
 
   const MarkdownBlockCard({
     super.key,
     required this.block,
     required this.onBlockChanged,
     required this.onBlockDeleted,
+    this.isEditing,
   });
 
   @override
@@ -29,6 +31,9 @@ class _MarkdownBlockCardState extends State<MarkdownBlockCard> {
   @override
   void initState() {
     _value = widget.block.content;
+    if (widget.isEditing != null) {
+      _isEditing = widget.isEditing!;
+    }
     super.initState();
   }
 

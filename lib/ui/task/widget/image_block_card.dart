@@ -17,6 +17,7 @@ class ImageBlockCard extends StatefulWidget {
   final void Function(Block, Block) onBlockChanged;
   final void Function(Block) onBlockDeleted;
   final String taskId;
+  final bool? isEditing;
 
   const ImageBlockCard({
     super.key,
@@ -24,6 +25,7 @@ class ImageBlockCard extends StatefulWidget {
     required this.onBlockChanged,
     required this.onBlockDeleted,
     required this.taskId,
+    this.isEditing,
   });
 
   @override
@@ -34,6 +36,14 @@ class _ImageBlockCardState extends State<ImageBlockCard> {
   final profile = di<Store<AppState>>().state.profileState.selected!;
   bool _isEditing = false;
   String? _newImagePath;
+
+  @override
+  void initState() {
+    if (widget.isEditing != null) {
+      _isEditing = widget.isEditing!;
+    }
+    super.initState();
+  }
 
   Future<void> _pickImage(ImageSource source) async {
     final image = await _imagePicker.pickImage(source: source);

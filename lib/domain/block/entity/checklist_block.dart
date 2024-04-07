@@ -18,6 +18,8 @@ class ChecklistBlock extends Block {
         elements = const [],
         super(type: 'checklist');
 
+  bool get isEmpty => title.isEmpty && elements.isEmpty;
+
   @override
   ChecklistBlock clone() => ChecklistBlock(
         type: type,
