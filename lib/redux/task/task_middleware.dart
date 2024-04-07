@@ -1,6 +1,9 @@
 import 'package:ayeayecaptain_mobile/domain/task/interface/task_repository.dart';
 import 'package:ayeayecaptain_mobile/redux/app/app_state.dart';
+import 'package:ayeayecaptain_mobile/redux/loader/actions.dart';
+import 'package:ayeayecaptain_mobile/redux/navigation/actions.dart';
 import 'package:ayeayecaptain_mobile/redux/task/actions.dart';
+import 'package:ayeayecaptain_mobile/ui/dialog/page/custom_alert_dialog.dart';
 import 'package:redux_epics/redux_epics.dart';
 
 class TaskMiddleware extends EpicMiddleware<AppState> {
@@ -10,6 +13,7 @@ class TaskMiddleware extends EpicMiddleware<AppState> {
           combineEpics(
             [
               _getTasks(repository),
+              _partiallyUpdateTask(repository),
             ],
           ),
         );
@@ -29,6 +33,35 @@ class TaskMiddleware extends EpicMiddleware<AppState> {
             if (request.wasSuccessful) {
               yield UpdateTasksAction(request.result!);
             }
+          },
+        ),
+      ).call;
+
+  static Epic<AppState> _partiallyUpdateTask(
+    TaskRepository repository,
+  ) =>
+      TypedEpic(
+        (
+          Stream<PartiallyUpdateTaskAction> actions,
+          EpicStore<AppState> store,
+        ) =>
+            actions.asyncExpand(
+          (action) async* {
+            yield ShowLoaderAction();
+            final request = await repository.partiallyUpdateTask(
+              profile: store.state.profileState.selected!,
+              taskId: action.taskId,
+              blocks: action.blocks,
+            );
+
+            if (request.wasSuccessful) {
+              yield ClosePageAction();
+            } else {
+              yield OpenAlertDialogAction(
+                DialogConfig(content: request.failure!.message),
+              );
+            }
+            yield HideLoaderAction();
           },
         ),
       ).call;

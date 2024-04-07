@@ -6,6 +6,7 @@ import 'package:ayeayecaptain_mobile/domain/block/entity/markdown_block.dart';
 import 'package:ayeayecaptain_mobile/domain/task/entity/task.dart';
 import 'package:ayeayecaptain_mobile/redux/app/app_state.dart';
 import 'package:ayeayecaptain_mobile/redux/navigation/actions.dart';
+import 'package:ayeayecaptain_mobile/redux/task/actions.dart';
 import 'package:ayeayecaptain_mobile/ui/components/unfocusable.dart';
 import 'package:ayeayecaptain_mobile/ui/task/widget/checklist_block_card.dart';
 import 'package:ayeayecaptain_mobile/ui/task/widget/image_block_card.dart';
@@ -60,7 +61,10 @@ class _EditTaskPageState extends State<EditTaskPage> {
           ),
           actions: [
             IconButton(
-              onPressed: () {},
+              onPressed: () => store.dispatch(PartiallyUpdateTaskAction(
+                widget.task.id,
+                widget.task.blocks,
+              )),
               icon: const Icon(Icons.save),
             ),
           ],

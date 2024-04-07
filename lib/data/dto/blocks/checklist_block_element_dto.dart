@@ -18,6 +18,12 @@ class ChecklistBlockElementDto {
         checked: checked,
       );
 
+  factory ChecklistBlockElementDto.fromDomain(ChecklistBlockElement domain) =>
+      ChecklistBlockElementDto(
+        domain.label,
+        domain.checked,
+      );
+
   factory ChecklistBlockElementDto.fromJson(Map<String, dynamic> json) =>
       _$ChecklistBlockElementDtoFromJson(json);
 
