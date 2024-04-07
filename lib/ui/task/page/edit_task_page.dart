@@ -54,6 +54,13 @@ class _EditTaskPageState extends State<EditTaskPage> {
     });
   }
 
+  void _reorderBlocks(int oldIndex, int newIndex) {
+    setState(() {
+      final block = clonedTask.blocks.removeAt(oldIndex);
+      clonedTask.blocks.insert(newIndex, block);
+    });
+  }
+
   void _save() {
     store.dispatch(PartiallyUpdateTaskAction(
       clonedTask.id,
@@ -107,28 +114,35 @@ class _EditTaskPageState extends State<EditTaskPage> {
                 ),
               ),
               const SizedBox(height: 16),
-              ...clonedTask.blocks.map(
-                (e) => e is MarkdownBlock
-                    ? MarkdownBlockCard(
-                        key: ObjectKey(e),
-                        block: e,
-                        onBlockChanged: _updateBlock,
-                        onBlockDeleted: _deleteBlock,
-                      )
-                    : e is ImageBlock
-                        ? ImageBlockCard(
-                            key: ObjectKey(e),
-                            block: e,
-                            onBlockChanged: _updateBlock,
-                            onBlockDeleted: _deleteBlock,
-                            taskId: clonedTask.id,
-                          )
-                        : ChecklistBlockCard(
-                            key: ObjectKey(e),
-                            block: e as ChecklistBlock,
-                            onBlockChanged: _updateBlock,
-                            onBlockDeleted: _deleteBlock,
-                          ),
+              ReorderableListView(
+                onReorder: _reorderBlocks,
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                children: clonedTask.blocks
+                    .map(
+                      (e) => e is MarkdownBlock
+                          ? MarkdownBlockCard(
+                              key: ObjectKey(e),
+                              block: e,
+                              onBlockChanged: _updateBlock,
+                              onBlockDeleted: _deleteBlock,
+                            )
+                          : e is ImageBlock
+                              ? ImageBlockCard(
+                                  key: ObjectKey(e),
+                                  block: e,
+                                  onBlockChanged: _updateBlock,
+                                  onBlockDeleted: _deleteBlock,
+                                  taskId: clonedTask.id,
+                                )
+                              : ChecklistBlockCard(
+                                  key: ObjectKey(e),
+                                  block: e as ChecklistBlock,
+                                  onBlockChanged: _updateBlock,
+                                  onBlockDeleted: _deleteBlock,
+                                ),
+                    )
+                    .toList(),
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
