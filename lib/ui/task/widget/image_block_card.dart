@@ -1,10 +1,12 @@
 import 'dart:io';
 
+import 'package:ayeayecaptain_mobile/app/constants.dart';
 import 'package:ayeayecaptain_mobile/app/globals.dart';
 import 'package:ayeayecaptain_mobile/domain/block/entity/block.dart';
 import 'package:ayeayecaptain_mobile/domain/block/entity/image_block.dart';
 import 'package:ayeayecaptain_mobile/domain/file/interface/file_repository.dart';
 import 'package:ayeayecaptain_mobile/redux/app/app_state.dart';
+import 'package:ayeayecaptain_mobile/redux/task/actions.dart';
 import 'package:ayeayecaptain_mobile/ui/task/widget/block_card.dart';
 import 'package:flutter/material.dart';
 import 'package:redux/redux.dart';
@@ -33,6 +35,7 @@ class ImageBlockCard extends StatefulWidget {
 }
 
 class _ImageBlockCardState extends State<ImageBlockCard> {
+  final store = di<Store<AppState>>();
   final profile = di<Store<AppState>>().state.profileState.selected!;
   bool _isEditing = false;
   String? _newImagePath;
@@ -57,8 +60,20 @@ class _ImageBlockCardState extends State<ImageBlockCard> {
         setState(() {
           _newImagePath = request.result!;
         });
+        _resetAttachments();
       }
     }
+  }
+
+  void _resetAttachments() {
+    final task =
+        store.state.taskState.tasks!.singleWhere((e) => e.id == widget.taskId);
+    store.dispatch(GetTaskAttachmentsAction(
+      taskId: widget.taskId,
+      page: task.attachmentsCurrentPage ?? 1,
+      pageSize: attachmentsPageSize,
+      shouldReset: true,
+    ));
   }
 
   Widget _getImage(

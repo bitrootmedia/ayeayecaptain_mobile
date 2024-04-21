@@ -56,7 +56,7 @@ Future<void> initialize() async {
       middleware: [
         ProfileMiddleware(di()).call,
         ProjectMiddleware(di()).call,
-        TaskMiddleware(di()).call,
+        TaskMiddleware(di(), di()).call,
         LoggingMiddleware(
           logger: Logger('Redux Logger')
             ..onRecord

@@ -14,9 +14,9 @@ class AttachmentDto {
   @JsonKey(name: 'file_path')
   final String filePath;
   @JsonKey(name: 'thumbnail_path')
-  final String thumbnailPath;
+  final String? thumbnailPath;
   final UserDto owner;
-  final ProjectDto project;
+  final ProjectDto? project;
 
   AttachmentDto(
     this.id,
@@ -28,14 +28,15 @@ class AttachmentDto {
     this.project,
   );
 
-  Attachment toDomain() => Attachment(
+  Attachment toDomain(int page) => Attachment(
         id: id,
         title: title,
         createdAt: createdAt,
         filePath: filePath,
         thumbnailPath: thumbnailPath,
         owner: owner.toDomain(),
-        project: project.toDomain(),
+        project: project?.toDomain(),
+        page: page,
       );
 
   factory AttachmentDto.fromJson(Map<String, dynamic> json) =>

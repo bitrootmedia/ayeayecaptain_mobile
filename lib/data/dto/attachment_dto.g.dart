@@ -12,9 +12,11 @@ AttachmentDto _$AttachmentDtoFromJson(Map<String, dynamic> json) =>
       json['title'] as String,
       DateTime.parse(json['created_at'] as String),
       json['file_path'] as String,
-      json['thumbnail_path'] as String,
+      json['thumbnail_path'] as String?,
       UserDto.fromJson(json['owner'] as Map<String, dynamic>),
-      ProjectDto.fromJson(json['project'] as Map<String, dynamic>),
+      json['project'] == null
+          ? null
+          : ProjectDto.fromJson(json['project'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$AttachmentDtoToJson(AttachmentDto instance) =>

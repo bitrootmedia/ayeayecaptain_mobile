@@ -8,9 +8,10 @@ class Attachment {
   final String title;
   final DateTime createdAt;
   final String filePath;
-  final String thumbnailPath;
+  final String? thumbnailPath;
   final User owner;
-  final Project project;
+  final Project? project;
+  final int page;
 
   const Attachment({
     required this.id,
@@ -20,5 +21,6 @@ class Attachment {
     required this.thumbnailPath,
     required this.owner,
     required this.project,
+    required this.page,
   });
 }

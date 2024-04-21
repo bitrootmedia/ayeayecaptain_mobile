@@ -1,6 +1,6 @@
 import 'package:ayeayecaptain_mobile/app/utils/failure_or_result.dart';
-import 'package:ayeayecaptain_mobile/data/dto/attachment_dto.dart';
-import 'package:ayeayecaptain_mobile/domain/attachment/entity/attachment.dart';
+import 'package:ayeayecaptain_mobile/data/dto/attachment_results_dto.dart';
+import 'package:ayeayecaptain_mobile/domain/attachment/entity/attachment_results.dart';
 import 'package:ayeayecaptain_mobile/domain/profile/entity/profile.dart';
 import 'package:ayeayecaptain_mobile/domain/attachment/interface/attachment_repository.dart'
     as domain;
@@ -12,11 +12,11 @@ class AttachmentRepository implements domain.AttachmentRepository {
   AttachmentRepository(this._client);
 
   @override
-  Future<FailureOrResult<List<Attachment>>> getAttachments({
+  Future<FailureOrResult<AttachmentResults>> getAttachments({
     required Profile profile,
     required String taskId,
     required int page,
-    int pageSize = 10,
+    required int pageSize,
   }) async {
     final response = await _client.get(
       '${profile.backendUrl}/api/attachments',
@@ -31,9 +31,8 @@ class AttachmentRepository implements domain.AttachmentRepository {
       }),
     );
 
-    final attachmentsDto = (response.data['results'] as List)
-        .map((e) => AttachmentDto.fromJson(e as Map<String, dynamic>));
     return FailureOrResult.success(
-        attachmentsDto.map((e) => e.toDomain()).toList());
+      AttachmentResultsDto.fromJson(response.data).toDomain(),
+    );
   }
 }

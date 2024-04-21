@@ -7,6 +7,7 @@ import 'package:ayeayecaptain_mobile/domain/task/entity/task.dart';
 import 'package:ayeayecaptain_mobile/redux/app/app_state.dart';
 import 'package:ayeayecaptain_mobile/redux/navigation/actions.dart';
 import 'package:ayeayecaptain_mobile/redux/task/actions.dart';
+import 'package:ayeayecaptain_mobile/ui/attachment/widget/attachment_section.dart';
 import 'package:ayeayecaptain_mobile/ui/components/unfocusable.dart';
 import 'package:ayeayecaptain_mobile/ui/task/widget/checklist_block_card.dart';
 import 'package:ayeayecaptain_mobile/ui/task/widget/image_block_card.dart';
@@ -173,6 +174,8 @@ class _EditTaskPageState extends State<EditTaskPage> {
                   ),
                 ],
               ),
+              const SizedBox(height: 24),
+              AttachmentSection(taskId: widget.task.id),
             ],
           ),
         ),

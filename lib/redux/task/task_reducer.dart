@@ -10,6 +10,8 @@ class TaskReducer extends ReducerClass<TaskState> {
       TypedReducer(_updateTasks).call,
       TypedReducer(_resetTasks).call,
       TypedReducer(_updateLocalTask).call,
+      TypedReducer(_addTaskAttachments).call,
+      TypedReducer(_updateTaskAttachmentsPage).call,
     ])(state, action);
   }
 
@@ -37,5 +39,42 @@ class TaskReducer extends ReducerClass<TaskState> {
   ) =>
       state.copyWith(
         tasks: Nullable(null),
+      );
+
+  TaskState _addTaskAttachments(
+    TaskState state,
+    AddTaskAttachmentsAction action,
+  ) =>
+      state.copyWith(
+        tasks: Nullable(state.tasks
+            ?.map((e) => e.id == action.taskId
+                ? e.copyWith(
+                    attachments: action.shouldReset
+                        ? action.attachmentResults.attachments
+                        : [
+                            ...?e.attachments,
+                            ...action.attachmentResults.attachments,
+                          ],
+                    attachmentsTotal: action.attachmentResults.attachmentsTotal,
+                    attachmentsPageSize: action.attachmentResults.pageSize,
+                    attachmentsCurrentPage: action.attachmentResults.page,
+                    attachmentsPagesTotal: action.attachmentResults.pagesTotal,
+                  )
+                : e)
+            .toList()),
+      );
+
+  TaskState _updateTaskAttachmentsPage(
+    TaskState state,
+    UpdateTaskAttachmentsPageAction action,
+  ) =>
+      state.copyWith(
+        tasks: Nullable(state.tasks
+            ?.map((e) => e.id == action.taskId
+                ? e.copyWith(
+                    attachmentsCurrentPage: action.page,
+                  )
+                : e)
+            .toList()),
       );
 }

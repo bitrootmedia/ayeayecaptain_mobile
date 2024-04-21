@@ -1,3 +1,4 @@
+import 'package:ayeayecaptain_mobile/domain/attachment/interface/attachment_repository.dart';
 import 'package:ayeayecaptain_mobile/domain/task/interface/task_repository.dart';
 import 'package:ayeayecaptain_mobile/redux/app/app_state.dart';
 import 'package:ayeayecaptain_mobile/redux/loader/actions.dart';
@@ -9,11 +10,13 @@ import 'package:redux_epics/redux_epics.dart';
 class TaskMiddleware extends EpicMiddleware<AppState> {
   TaskMiddleware(
     TaskRepository repository,
+    AttachmentRepository attachmentRepository,
   ) : super(
           combineEpics(
             [
               _getTasks(repository),
               _partiallyUpdateTask(repository),
+              _getTaskAttachments(attachmentRepository),
             ],
           ),
         );
@@ -63,6 +66,34 @@ class TaskMiddleware extends EpicMiddleware<AppState> {
               );
             }
             yield HideLoaderAction();
+          },
+        ),
+      ).call;
+
+  static Epic<AppState> _getTaskAttachments(
+    AttachmentRepository repository,
+  ) =>
+      TypedEpic(
+        (
+          Stream<GetTaskAttachmentsAction> actions,
+          EpicStore<AppState> store,
+        ) =>
+            actions.asyncExpand(
+          (action) async* {
+            final request = await repository.getAttachments(
+              profile: store.state.profileState.selected!,
+              taskId: action.taskId,
+              page: action.page,
+              pageSize: action.pageSize,
+            );
+
+            if (request.wasSuccessful) {
+              yield AddTaskAttachmentsAction(
+                taskId: action.taskId,
+                attachmentResults: request.result!,
+                shouldReset: action.shouldReset,
+              );
+            }
           },
         ),
       ).call;
