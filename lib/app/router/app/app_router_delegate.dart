@@ -8,6 +8,7 @@ import 'package:ayeayecaptain_mobile/ui/profile/page/profile_list_page.dart';
 import 'package:ayeayecaptain_mobile/ui/project/page/project_list_page.dart';
 import 'package:ayeayecaptain_mobile/ui/task/page/edit_task_page.dart';
 import 'package:ayeayecaptain_mobile/ui/task/page/task_list_page.dart';
+import 'package:ayeayecaptain_mobile/ui/task/page/view_image_page.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
@@ -77,7 +78,14 @@ class AppRouterDelegate extends RouterDelegate<NavigationState>
                       task: viewModel.route.task!,
                     ),
                   ),
-                // must be last
+                if (viewModel.route.isViewImagePageOpened)
+                  MaterialPage(
+                    key: const ValueKey('viewImagePage'),
+                    child: ViewImagePage(
+                      imagePath: viewModel.route.imagePath!,
+                    ),
+                  ),
+                // Must be last
                 if (viewModel.route.isAlertDialogOpened)
                   MaterialDialog(
                     builder: (context) => CustomAlertDialog(

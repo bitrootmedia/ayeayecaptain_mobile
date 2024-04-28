@@ -26,3 +26,9 @@ class OpenEditTaskPageAction implements NavigationAction {
 
   OpenEditTaskPageAction(this.task);
 }
+
+class OpenViewImagePageAction implements NavigationAction {
+  final String imagePath;
+
+  OpenViewImagePageAction(this.imagePath);
+}

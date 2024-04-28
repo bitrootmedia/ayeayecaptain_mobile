@@ -6,6 +6,7 @@ import 'package:ayeayecaptain_mobile/domain/block/entity/block.dart';
 import 'package:ayeayecaptain_mobile/domain/block/entity/image_block.dart';
 import 'package:ayeayecaptain_mobile/domain/file/interface/file_repository.dart';
 import 'package:ayeayecaptain_mobile/redux/app/app_state.dart';
+import 'package:ayeayecaptain_mobile/redux/navigation/actions.dart';
 import 'package:ayeayecaptain_mobile/redux/task/actions.dart';
 import 'package:ayeayecaptain_mobile/ui/task/widget/block_card.dart';
 import 'package:flutter/material.dart';
@@ -80,21 +81,24 @@ class _ImageBlockCardState extends State<ImageBlockCard> {
     String src, {
     int? cacheHeight,
   }) {
-    return Image.network(
-      src,
-      fit: BoxFit.contain,
-      cacheHeight: cacheHeight,
-      loadingBuilder: (context, child, loadingProgress) {
-        if (loadingProgress == null) return child;
-        return Center(
-          child: CircularProgressIndicator(
-            value: loadingProgress.expectedTotalBytes != null
-                ? loadingProgress.cumulativeBytesLoaded /
-                    loadingProgress.expectedTotalBytes!
-                : null,
-          ),
-        );
-      },
+    return GestureDetector(
+      onTap: () => store.dispatch(OpenViewImagePageAction(src)),
+      child: Image.network(
+        src,
+        fit: BoxFit.contain,
+        cacheHeight: cacheHeight,
+        loadingBuilder: (context, child, loadingProgress) {
+          if (loadingProgress == null) return child;
+          return Center(
+            child: CircularProgressIndicator(
+              value: loadingProgress.expectedTotalBytes != null
+                  ? loadingProgress.cumulativeBytesLoaded /
+                      loadingProgress.expectedTotalBytes!
+                  : null,
+            ),
+          );
+        },
+      ),
     );
   }
 

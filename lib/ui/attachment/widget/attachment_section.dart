@@ -1,7 +1,9 @@
 import 'package:ayeayecaptain_mobile/app/constants.dart';
+import 'package:ayeayecaptain_mobile/app/globals.dart';
 import 'package:ayeayecaptain_mobile/domain/attachment/entity/attachment.dart';
 import 'package:ayeayecaptain_mobile/domain/task/entity/task.dart';
 import 'package:ayeayecaptain_mobile/redux/app/app_state.dart';
+import 'package:ayeayecaptain_mobile/redux/navigation/actions.dart';
 import 'package:ayeayecaptain_mobile/redux/task/actions.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
@@ -161,7 +163,10 @@ class AttachmentSection extends StatelessWidget {
                     ),
                   ),
                 )
-              : getImage(attachment.thumbnailPath!),
+              : getImage(
+                  attachment.filePath,
+                  attachment.thumbnailPath!,
+                ),
           IconButton(
             onPressed: () {},
             icon: const Icon(
@@ -179,29 +184,33 @@ class AttachmentSection extends StatelessWidget {
     );
   }
 
-  Widget getImage(String src) {
-    return SizedBox(
-      width: 70,
-      height: 70,
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(4),
-        child: Image.network(
-          src,
-          cacheHeight: 70,
-          fit: BoxFit.cover,
-          loadingBuilder: (context, child, loadingProgress) {
-            if (loadingProgress == null) return child;
-            return Padding(
-              padding: const EdgeInsets.all(20),
-              child: CircularProgressIndicator(
-                strokeWidth: 3,
-                value: loadingProgress.expectedTotalBytes != null
-                    ? loadingProgress.cumulativeBytesLoaded /
-                        loadingProgress.expectedTotalBytes!
-                    : null,
-              ),
-            );
-          },
+  Widget getImage(String filePath, String thumbnailPath) {
+    return GestureDetector(
+      onTap: () =>
+          di<Store<AppState>>().dispatch(OpenViewImagePageAction(filePath)),
+      child: SizedBox(
+        width: 70,
+        height: 70,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(4),
+          child: Image.network(
+            thumbnailPath,
+            cacheHeight: 70,
+            fit: BoxFit.cover,
+            loadingBuilder: (context, child, loadingProgress) {
+              if (loadingProgress == null) return child;
+              return Padding(
+                padding: const EdgeInsets.all(20),
+                child: CircularProgressIndicator(
+                  strokeWidth: 3,
+                  value: loadingProgress.expectedTotalBytes != null
+                      ? loadingProgress.cumulativeBytesLoaded /
+                          loadingProgress.expectedTotalBytes!
+                      : null,
+                ),
+              );
+            },
+          ),
         ),
       ),
     );
