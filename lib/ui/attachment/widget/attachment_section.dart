@@ -246,11 +246,13 @@ class _ViewModel with EquatableMixin {
   final Store<AppState> _store;
   final String taskId;
   final List<Task>? tasks;
+  final bool isAttachmentsLoading;
 
   _ViewModel(
     this._store,
     this.taskId,
-  ) : tasks = _store.state.taskState.tasks;
+  )   : tasks = _store.state.taskState.tasks,
+        isAttachmentsLoading = _store.state.taskState.isAttachmentsLoading;
 
   Task get task => tasks!.singleWhere((e) => e.id == taskId);
 
@@ -272,13 +274,17 @@ class _ViewModel with EquatableMixin {
 
   VoidCallback? getGoToNext() {
     return task.attachmentsCurrentPage! < task.attachmentsPagesTotal!
-        ? () => getAttachments(task.attachmentsCurrentPage! + 1)
+        ? isAttachmentsLoading
+            ? () {}
+            : () => getAttachments(task.attachmentsCurrentPage! + 1)
         : null;
   }
 
   VoidCallback? getGoToPrevious() {
     return task.attachmentsCurrentPage! > 1
-        ? () => getAttachments(task.attachmentsCurrentPage! - 1)
+        ? isAttachmentsLoading
+            ? () {}
+            : () => getAttachments(task.attachmentsCurrentPage! - 1)
         : null;
   }
 
@@ -292,5 +298,8 @@ class _ViewModel with EquatableMixin {
       task.attachments != null && task.attachments!.isNotEmpty;
 
   @override
-  List<Object?> get props => [tasks];
+  List<Object?> get props => [
+        tasks,
+        isAttachmentsLoading,
+      ];
 }
