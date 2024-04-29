@@ -8,5 +8,6 @@ abstract class AttachmentRepository {
     required String taskId,
     required int page,
     required int pageSize,
+    required String orderBy,
   });
 }

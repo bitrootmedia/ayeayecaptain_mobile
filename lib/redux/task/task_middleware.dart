@@ -85,12 +85,14 @@ class TaskMiddleware extends EpicMiddleware<AppState> {
               taskId: action.taskId,
               page: action.page,
               pageSize: action.pageSize,
+              orderBy: action.orderBy,
             );
 
             if (request.wasSuccessful) {
               yield AddTaskAttachmentsAction(
                 taskId: action.taskId,
                 attachmentResults: request.result!,
+                orderBy: action.orderBy,
                 shouldReset: action.shouldReset,
               );
             }

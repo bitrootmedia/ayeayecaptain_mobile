@@ -17,6 +17,7 @@ class AttachmentRepository implements domain.AttachmentRepository {
     required String taskId,
     required int page,
     required int pageSize,
+    required String orderBy,
   }) async {
     final response = await _client.get(
       '${profile.backendUrl}/api/attachments',
@@ -24,6 +25,7 @@ class AttachmentRepository implements domain.AttachmentRepository {
         'task': taskId,
         'page': page,
         'page_size': pageSize,
+        'ordering': orderBy,
       },
       options: Options(headers: {
         'Content-Type': 'application/json',

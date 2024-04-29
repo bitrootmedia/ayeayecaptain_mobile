@@ -2,6 +2,11 @@ import 'package:ayeayecaptain_mobile/domain/attachment/entity/attachment.dart';
 import 'package:ayeayecaptain_mobile/domain/block/entity/block.dart';
 import 'package:flutter/foundation.dart';
 
+const orderByCreatedAt = 'created_at';
+const orderByOwner = 'owner';
+const orderByProject = 'project';
+const orderByTitle = 'title';
+
 @immutable
 class Task {
   final String id;
@@ -12,6 +17,7 @@ class Task {
   final int? attachmentsPageSize;
   final int? attachmentsCurrentPage;
   final int? attachmentsPagesTotal;
+  final String attachmentsOrderBy;
 
   const Task({
     required this.id,
@@ -22,6 +28,7 @@ class Task {
     this.attachmentsPageSize,
     this.attachmentsCurrentPage,
     this.attachmentsPagesTotal,
+    this.attachmentsOrderBy = orderByCreatedAt,
   });
 
   Task clone() => Task(
@@ -33,6 +40,7 @@ class Task {
         attachmentsPageSize: attachmentsPageSize,
         attachmentsCurrentPage: attachmentsCurrentPage,
         attachmentsPagesTotal: attachmentsPagesTotal,
+        attachmentsOrderBy: attachmentsOrderBy,
       );
 
   Task copyWith({
@@ -41,6 +49,7 @@ class Task {
     int? attachmentsPageSize,
     int? attachmentsCurrentPage,
     int? attachmentsPagesTotal,
+    String? attachmentsOrderBy,
   }) =>
       Task(
         id: id,
@@ -53,5 +62,6 @@ class Task {
             attachmentsCurrentPage ?? this.attachmentsCurrentPage,
         attachmentsPagesTotal:
             attachmentsPagesTotal ?? this.attachmentsPagesTotal,
+        attachmentsOrderBy: attachmentsOrderBy ?? this.attachmentsOrderBy,
       );
 }

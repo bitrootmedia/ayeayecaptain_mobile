@@ -68,6 +68,7 @@ class TaskReducer extends ReducerClass<TaskState> {
                     attachmentsPageSize: action.attachmentResults.pageSize,
                     attachmentsCurrentPage: action.attachmentResults.page,
                     attachmentsPagesTotal: action.attachmentResults.pagesTotal,
+                    attachmentsOrderBy: action.orderBy,
                   )
                 : e)
             .toList()),

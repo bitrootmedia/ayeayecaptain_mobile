@@ -33,11 +33,13 @@ class UpdateLocalTaskAction {
 class AddTaskAttachmentsAction {
   final String taskId;
   final AttachmentResults attachmentResults;
+  final String orderBy;
   final bool shouldReset;
 
   AddTaskAttachmentsAction({
     required this.taskId,
     required this.attachmentResults,
+    required this.orderBy,
     this.shouldReset = false,
   });
 }
@@ -46,12 +48,14 @@ class GetTaskAttachmentsAction {
   final String taskId;
   final int page;
   final int pageSize;
+  final String orderBy;
   final bool shouldReset;
 
   GetTaskAttachmentsAction({
     required this.taskId,
     required this.page,
     required this.pageSize,
+    required this.orderBy,
     this.shouldReset = false,
   });
 }

@@ -73,6 +73,7 @@ class _ImageBlockCardState extends State<ImageBlockCard> {
       taskId: widget.taskId,
       page: task.attachmentsCurrentPage ?? 1,
       pageSize: attachmentsPageSize,
+      orderBy: task.attachmentsOrderBy,
       shouldReset: true,
     ));
   }

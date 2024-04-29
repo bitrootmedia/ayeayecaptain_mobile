@@ -5,6 +5,7 @@ import 'package:ayeayecaptain_mobile/domain/task/entity/task.dart';
 import 'package:ayeayecaptain_mobile/redux/app/app_state.dart';
 import 'package:ayeayecaptain_mobile/redux/navigation/actions.dart';
 import 'package:ayeayecaptain_mobile/redux/task/actions.dart';
+import 'package:ayeayecaptain_mobile/ui/attachment/widget/attachment_order_dropdown.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
@@ -31,14 +32,23 @@ class AttachmentSection extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'Attachments',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w700,
-                ),
+              Row(
+                children: [
+                  const Text(
+                    'Attachments',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () {},
+                    icon: const Icon(Icons.attach_file_rounded),
+                  ),
+                ],
               ),
-              const SizedBox(height: 16),
+              AttachmentOrderDropdown(task: viewModel.task),
+              const SizedBox(height: 12),
               viewModel.isLoaded
                   ? viewModel.hasAttachments
                       ? Column(
@@ -272,6 +282,7 @@ class _ViewModel with EquatableMixin {
         taskId: taskId,
         page: page,
         pageSize: attachmentsPageSize,
+        orderBy: task.attachmentsOrderBy,
       ));
     } else {
       _store.dispatch(UpdateTaskAttachmentsPageAction(
