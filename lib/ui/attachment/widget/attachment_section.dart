@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:ayeayecaptain_mobile/app/constants.dart';
 import 'package:ayeayecaptain_mobile/app/globals.dart';
 import 'package:ayeayecaptain_mobile/domain/attachment/entity/attachment.dart';
+import 'package:ayeayecaptain_mobile/domain/file/interface/file_repository.dart';
 import 'package:ayeayecaptain_mobile/domain/task/entity/task.dart';
 import 'package:ayeayecaptain_mobile/redux/app/app_state.dart';
 import 'package:ayeayecaptain_mobile/redux/navigation/actions.dart';
@@ -11,8 +14,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:intl/intl.dart';
 import 'package:redux/redux.dart';
+import 'package:file_picker/file_picker.dart';
 
-class AttachmentSection extends StatelessWidget {
+class AttachmentSection extends StatefulWidget {
   final String taskId;
 
   const AttachmentSection({
@@ -21,10 +25,48 @@ class AttachmentSection extends StatelessWidget {
   });
 
   @override
+  State<AttachmentSection> createState() => _AttachmentSectionState();
+}
+
+class _AttachmentSectionState extends State<AttachmentSection> {
+  final store = di<Store<AppState>>();
+  bool _isUploading = false;
+
+  Future<void> pickFile(Task task) async {
+    final result = await FilePicker.platform.pickFiles();
+    if (result != null) {
+      setState(() {
+        _isUploading = true;
+      });
+      final request = await di<FileRepository>().uploadFile(
+        profile: store.state.profileState.selected!,
+        taskId: widget.taskId,
+        file: File(result.files.single.path!),
+      );
+      setState(() {
+        _isUploading = false;
+      });
+      if (request.wasSuccessful) {
+        resetAttachments(task);
+      }
+    }
+  }
+
+  void resetAttachments(Task task) {
+    store.dispatch(GetTaskAttachmentsAction(
+      taskId: widget.taskId,
+      page: task.attachmentsCurrentPage ?? 1,
+      pageSize: attachmentsPageSize,
+      orderBy: task.attachmentsOrderBy,
+      shouldReset: true,
+    ));
+  }
+
+  @override
   Widget build(BuildContext context) {
     return StoreConnector<AppState, _ViewModel>(
       distinct: true,
-      converter: (store) => _ViewModel(store, taskId),
+      converter: (store) => _ViewModel(store, widget.taskId),
       onInitialBuild: (viewModel) => viewModel.getAttachments(),
       builder: (context, viewModel) {
         return Padding(
@@ -42,9 +84,10 @@ class AttachmentSection extends StatelessWidget {
                     ),
                   ),
                   IconButton(
-                    onPressed: () {},
+                    onPressed: () => pickFile(viewModel.task),
                     icon: const Icon(Icons.attach_file_rounded),
                   ),
+                  if (_isUploading) const Text('Uploading...'),
                 ],
               ),
               AttachmentOrderDropdown(task: viewModel.task),
