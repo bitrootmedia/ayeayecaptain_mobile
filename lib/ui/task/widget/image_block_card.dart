@@ -40,6 +40,7 @@ class _ImageBlockCardState extends State<ImageBlockCard> {
   final profile = di<Store<AppState>>().state.profileState.selected!;
   bool _isEditing = false;
   String? _newImagePath;
+  bool _isUploading = false;
 
   @override
   void initState() {
@@ -52,11 +53,17 @@ class _ImageBlockCardState extends State<ImageBlockCard> {
   Future<void> _pickImage(ImageSource source) async {
     final image = await _imagePicker.pickImage(source: source);
     if (image != null) {
+      setState(() {
+        _isUploading = true;
+      });
       final request = await di<FileRepository>().uploadFile(
         profile: profile,
         taskId: widget.taskId,
         file: File(image.path),
       );
+      setState(() {
+        _isUploading = false;
+      });
       if (request.wasSuccessful) {
         setState(() {
           _newImagePath = request.result!;
@@ -172,6 +179,7 @@ class _ImageBlockCardState extends State<ImageBlockCard> {
                             cacheHeight: 60,
                           ),
                         ),
+                      if (_isUploading) const Text('Uploading...'),
                     ],
                   )
                 : widget.block.path.isEmpty
