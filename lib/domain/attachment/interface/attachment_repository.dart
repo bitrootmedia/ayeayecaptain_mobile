@@ -10,4 +10,9 @@ abstract class AttachmentRepository {
     required int pageSize,
     required String orderBy,
   });
+
+  Future<FailureOrResult<void>> deleteAttachment({
+    required Profile profile,
+    required String id,
+  });
 }

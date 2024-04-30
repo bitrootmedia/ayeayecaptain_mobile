@@ -37,4 +37,20 @@ class AttachmentRepository implements domain.AttachmentRepository {
       AttachmentResultsDto.fromJson(response.data).toDomain(),
     );
   }
+
+  @override
+  Future<FailureOrResult<void>> deleteAttachment({
+    required Profile profile,
+    required String id,
+  }) async {
+    await _client.delete(
+      '${profile.backendUrl}/api/attachment/$id',
+      options: Options(headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Token ${profile.token}',
+      }),
+    );
+
+    return FailureOrResult.success(null);
+  }
 }

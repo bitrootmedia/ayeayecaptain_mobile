@@ -1,3 +1,4 @@
+import 'package:ayeayecaptain_mobile/app/constants.dart';
 import 'package:ayeayecaptain_mobile/domain/attachment/interface/attachment_repository.dart';
 import 'package:ayeayecaptain_mobile/domain/task/interface/task_repository.dart';
 import 'package:ayeayecaptain_mobile/redux/app/app_state.dart';
@@ -17,6 +18,7 @@ class TaskMiddleware extends EpicMiddleware<AppState> {
               _getTasks(repository),
               _partiallyUpdateTask(repository),
               _getTaskAttachments(attachmentRepository),
+              _deleteAttachment(attachmentRepository),
             ],
           ),
         );
@@ -94,6 +96,35 @@ class TaskMiddleware extends EpicMiddleware<AppState> {
                 attachmentResults: request.result!,
                 orderBy: action.orderBy,
                 shouldReset: action.shouldReset,
+              );
+            }
+          },
+        ),
+      ).call;
+
+  static Epic<AppState> _deleteAttachment(
+    AttachmentRepository repository,
+  ) =>
+      TypedEpic(
+        (
+          Stream<DeleteTaskAttachmentAction> actions,
+          EpicStore<AppState> store,
+        ) =>
+            actions.asyncExpand(
+          (action) async* {
+            final request = await repository.deleteAttachment(
+              profile: store.state.profileState.selected!,
+              id: action.id,
+            );
+
+            if (request.wasSuccessful) {
+              yield GetTaskAttachmentsAction(
+                taskId: action.task.id,
+                page: action.task.attachmentsCurrentPage ?? 1,
+                pageSize:
+                    action.task.attachmentsPageSize ?? attachmentsPageSize,
+                orderBy: action.task.attachmentsOrderBy,
+                shouldReset: true,
               );
             }
           },

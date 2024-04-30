@@ -9,6 +9,7 @@ import 'package:ayeayecaptain_mobile/redux/app/app_state.dart';
 import 'package:ayeayecaptain_mobile/redux/navigation/actions.dart';
 import 'package:ayeayecaptain_mobile/redux/task/actions.dart';
 import 'package:ayeayecaptain_mobile/ui/attachment/widget/attachment_order_dropdown.dart';
+import 'package:ayeayecaptain_mobile/ui/dialog/page/custom_alert_dialog.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
@@ -32,7 +33,7 @@ class _AttachmentSectionState extends State<AttachmentSection> {
   final store = di<Store<AppState>>();
   bool _isUploading = false;
 
-  Future<void> pickFile(Task task) async {
+  Future<void> _pickFile(Task task) async {
     final result = await FilePicker.platform.pickFiles();
     if (result != null) {
       setState(() {
@@ -47,12 +48,12 @@ class _AttachmentSectionState extends State<AttachmentSection> {
         _isUploading = false;
       });
       if (request.wasSuccessful) {
-        resetAttachments(task);
+        _resetAttachments(task);
       }
     }
   }
 
-  void resetAttachments(Task task) {
+  void _resetAttachments(Task task) {
     store.dispatch(GetTaskAttachmentsAction(
       taskId: widget.taskId,
       page: task.attachmentsCurrentPage ?? 1,
@@ -60,6 +61,25 @@ class _AttachmentSectionState extends State<AttachmentSection> {
       orderBy: task.attachmentsOrderBy,
       shouldReset: true,
     ));
+  }
+
+  void _deleteAttachments(String id, Task task) {
+    store.dispatch(
+      OpenAlertDialogAction(
+        DialogConfig(
+          content: 'Are you sure you want to delete this attachment?',
+          actions: [
+            DialogAction(
+              label: 'Cancel',
+            ),
+            DialogAction(
+              label: 'Delete',
+              action: DeleteTaskAttachmentAction(id, task),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   @override
@@ -84,7 +104,7 @@ class _AttachmentSectionState extends State<AttachmentSection> {
                     ),
                   ),
                   IconButton(
-                    onPressed: () => pickFile(viewModel.task),
+                    onPressed: () => _pickFile(viewModel.task),
                     icon: const Icon(Icons.attach_file_rounded),
                   ),
                   if (_isUploading) const Text('Uploading...'),
@@ -109,6 +129,7 @@ class _AttachmentSectionState extends State<AttachmentSection> {
                                 itemBuilder: (context, index) =>
                                     getAttachmentTale(
                                   viewModel.currentPageAttachments[index],
+                                  viewModel.task,
                                 ),
                                 separatorBuilder: (context, index) => Divider(
                                   thickness: 0.5,
@@ -136,7 +157,10 @@ class _AttachmentSectionState extends State<AttachmentSection> {
     );
   }
 
-  Widget getAttachmentTale(Attachment attachment) {
+  Widget getAttachmentTale(
+    Attachment attachment,
+    Task task,
+  ) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(8, 8, 0, 8),
       child: Row(
@@ -227,7 +251,7 @@ class _AttachmentSectionState extends State<AttachmentSection> {
             ),
           ),
           IconButton(
-            onPressed: () {},
+            onPressed: () => _deleteAttachments(attachment.id, task),
             icon: const Icon(
               Icons.delete,
             ),

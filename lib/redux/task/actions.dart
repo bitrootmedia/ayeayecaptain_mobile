@@ -69,3 +69,13 @@ class UpdateTaskAttachmentsPageAction {
     required this.page,
   });
 }
+
+class DeleteTaskAttachmentAction {
+  final String id;
+  final Task task;
+
+  DeleteTaskAttachmentAction(
+    this.id,
+    this.task,
+  );
+}
