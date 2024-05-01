@@ -6,9 +6,21 @@ import 'package:ayeayecaptain_mobile/domain/task/entity/task.dart';
 abstract class TaskRepository {
   Future<FailureOrResult<List<Task>>> getTasks(Profile profile);
 
-  Future<FailureOrResult<Task>> partiallyUpdateTask({
+  Future<FailureOrResult<void>> partiallyUpdateTask({
     required Profile profile,
     required String taskId,
     required List<Block> blocks,
   });
+
+  Future<FailureOrResult<String>> createTask({
+    required Profile profile,
+    required String title,
+    required bool addToUserQueue,
+    required String queuePosition,
+  });
+
+  Future<FailureOrResult<Task>> getTask(
+    Profile profile,
+    String id,
+  );
 }

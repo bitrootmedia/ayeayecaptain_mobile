@@ -54,7 +54,7 @@ class ProfileListPage extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: () => store.dispatch(OpenCreateProfilePageAction()),
-            icon: const Icon(Icons.add),
+            icon: const Icon(Icons.add_rounded),
           ),
         ],
       ),

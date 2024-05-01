@@ -16,6 +16,7 @@ class NavigationRouteState with EquatableMixin {
   final Task? task;
   final bool isViewImagePageOpened;
   final String? imagePath;
+  final bool isCreateTaskPageOpened;
 
   const NavigationRouteState({
     this.isProfileListPageOpened = false,
@@ -29,6 +30,7 @@ class NavigationRouteState with EquatableMixin {
     this.task,
     this.isViewImagePageOpened = false,
     this.imagePath,
+    this.isCreateTaskPageOpened = false,
   });
 
   NavigationRouteState.initial()
@@ -42,7 +44,8 @@ class NavigationRouteState with EquatableMixin {
         isEditTaskPageOpened = false,
         task = null,
         isViewImagePageOpened = false,
-        imagePath = null;
+        imagePath = null,
+        isCreateTaskPageOpened = false;
 
   NavigationRouteState copyWith({
     bool? isProfileListPageOpened,
@@ -56,6 +59,7 @@ class NavigationRouteState with EquatableMixin {
     Task? task,
     bool? isViewImagePageOpened,
     String? imagePath,
+    bool? isCreateTaskPageOpened,
   }) =>
       NavigationRouteState(
         isProfileListPageOpened:
@@ -73,6 +77,8 @@ class NavigationRouteState with EquatableMixin {
         isViewImagePageOpened:
             isViewImagePageOpened ?? this.isViewImagePageOpened,
         imagePath: imagePath ?? this.imagePath,
+        isCreateTaskPageOpened:
+            isCreateTaskPageOpened ?? this.isCreateTaskPageOpened,
       );
 
   @override
@@ -88,5 +94,6 @@ class NavigationRouteState with EquatableMixin {
         task,
         isViewImagePageOpened,
         imagePath,
+        isCreateTaskPageOpened,
       ];
 }

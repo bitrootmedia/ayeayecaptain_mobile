@@ -1,3 +1,4 @@
+import 'package:ayeayecaptain_mobile/app/utils/error_messages.dart';
 import 'package:ayeayecaptain_mobile/app/utils/failure_codes.dart';
 import 'package:ayeayecaptain_mobile/app/utils/failure_or_result.dart';
 import 'package:ayeayecaptain_mobile/data/dto/blocks/block_dto.dart';
@@ -30,13 +31,13 @@ class TaskRepository implements domain.TaskRepository {
   }
 
   @override
-  Future<FailureOrResult<Task>> partiallyUpdateTask({
+  Future<FailureOrResult<void>> partiallyUpdateTask({
     required Profile profile,
     required String taskId,
     required List<Block> blocks,
   }) async {
     try {
-      final response = await _client.patch(
+      await _client.patch(
         '${profile.backendUrl}/api/task/$taskId',
         data: {
           'blocks': blocks
@@ -50,14 +51,60 @@ class TaskRepository implements domain.TaskRepository {
         }),
       );
 
-      final task = TaskDto.fromJson(response.data as Map<String, dynamic>);
-      return FailureOrResult.success(task.toDomain());
+      return FailureOrResult.success(null);
     } on DioException catch (e) {
       return FailureOrResult.failure(
         code: FailureCodes.unknownError,
-        message:
-            'Response status message: ${e.response?.statusMessage}, code ${e.response?.statusCode};\nError message: ${e.message};\nError: ${e.error}',
+        message: getUnknownDioErrorMessage(e),
       );
     }
+  }
+
+  @override
+  Future<FailureOrResult<String>> createTask({
+    required Profile profile,
+    required String title,
+    required bool addToUserQueue,
+    required String queuePosition,
+  }) async {
+    try {
+      final response = await _client.post(
+        '${profile.backendUrl}/api/tasks',
+        data: {
+          'title': title,
+          'project': null,
+          if (addToUserQueue) 'add_to_user_queue': true,
+          if (addToUserQueue) 'queue_position': queuePosition,
+        },
+        options: Options(headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Token ${profile.token}',
+        }),
+      );
+
+      return FailureOrResult.success(response.data['id']);
+    } on DioException catch (e) {
+      return FailureOrResult.failure(
+        code: FailureCodes.unknownError,
+        message: getUnknownDioErrorMessage(e),
+      );
+    }
+  }
+
+  @override
+  Future<FailureOrResult<Task>> getTask(
+    Profile profile,
+    String id,
+  ) async {
+    final response = await _client.get(
+      '${profile.backendUrl}/api/task/$id',
+      options: Options(headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Token ${profile.token}',
+      }),
+    );
+
+    final taskDto = TaskDto.fromJson(response.data as Map<String, dynamic>);
+    return FailureOrResult.success(taskDto.toDomain());
   }
 }

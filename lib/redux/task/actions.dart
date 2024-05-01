@@ -79,3 +79,33 @@ class DeleteTaskAttachmentAction {
     this.task,
   );
 }
+
+class CreateTaskAction {
+  final String title;
+  final bool addToUserQueue;
+  final String queuePosition;
+
+  CreateTaskAction({
+    required this.title,
+    required this.addToUserQueue,
+    required this.queuePosition,
+  });
+}
+
+class GetNewTaskAction {
+  final String id;
+
+  GetNewTaskAction(this.id);
+}
+
+class GetUpdatedTaskAction {
+  final String id;
+
+  GetUpdatedTaskAction(this.id);
+}
+
+class AddLocalTaskAction {
+  final Task task;
+
+  AddLocalTaskAction(this.task);
+}

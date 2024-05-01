@@ -37,7 +37,7 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
     return Unfocusable(
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Create Profile'),
+          title: const Text('New Profile'),
           centerTitle: true,
           automaticallyImplyLeading: false,
           leading: store.state.navigationState.previousRoutes.isNotEmpty

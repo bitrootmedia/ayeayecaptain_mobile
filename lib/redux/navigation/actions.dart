@@ -32,3 +32,5 @@ class OpenViewImagePageAction implements NavigationAction {
 
   OpenViewImagePageAction(this.imagePath);
 }
+
+class OpenCreateTaskPageAction implements NavigationAction {}

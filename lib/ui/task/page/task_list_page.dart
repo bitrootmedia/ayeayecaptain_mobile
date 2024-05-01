@@ -24,6 +24,12 @@ class TaskListPage extends StatelessWidget {
           onPressed: () => store.dispatch(ClosePageAction()),
           icon: const Icon(Icons.arrow_back_ios_new_rounded),
         ),
+        actions: [
+          IconButton(
+            onPressed: () => store.dispatch(OpenCreateTaskPageAction()),
+            icon: const Icon(Icons.add_rounded),
+          ),
+        ],
       ),
       body: StoreConnector<AppState, _ViewModel>(
         distinct: true,

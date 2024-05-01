@@ -38,9 +38,9 @@ class ProjectListPage extends StatelessWidget {
                       itemCount: viewModel.projects!.length,
                       itemBuilder: (context, index) {
                         final project = viewModel.projects![index];
-                        return Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: Text(project.title),
+                        return ListTile(
+                          title: Text(project.title),
+                          onTap: () {},
                         );
                       },
                       separatorBuilder: (_, __) => const Divider(

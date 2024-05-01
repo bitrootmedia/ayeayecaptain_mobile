@@ -16,7 +16,10 @@ class TaskMiddleware extends EpicMiddleware<AppState> {
           combineEpics(
             [
               _getTasks(repository),
+              _getNewTask(repository),
+              _getUpdatedTask(repository),
               _partiallyUpdateTask(repository),
+              _createTask(repository),
               _getTaskAttachments(attachmentRepository),
               _deleteAttachment(attachmentRepository),
             ],
@@ -42,6 +45,57 @@ class TaskMiddleware extends EpicMiddleware<AppState> {
         ),
       ).call;
 
+  static Epic<AppState> _getNewTask(
+    TaskRepository repository,
+  ) =>
+      TypedEpic(
+        (
+          Stream<GetNewTaskAction> actions,
+          EpicStore<AppState> store,
+        ) =>
+            actions.asyncExpand(
+          (action) async* {
+            final request = await repository.getTask(
+              store.state.profileState.selected!,
+              action.id,
+            );
+
+            if (request.wasSuccessful) {
+              yield AddLocalTaskAction(request.result!);
+              yield ClosePageAction();
+              yield OpenEditTaskPageAction(request.result!);
+            }
+
+            yield HideLoaderAction();
+          },
+        ),
+      ).call;
+
+  static Epic<AppState> _getUpdatedTask(
+    TaskRepository repository,
+  ) =>
+      TypedEpic(
+        (
+          Stream<GetUpdatedTaskAction> actions,
+          EpicStore<AppState> store,
+        ) =>
+            actions.asyncExpand(
+          (action) async* {
+            final request = await repository.getTask(
+              store.state.profileState.selected!,
+              action.id,
+            );
+
+            if (request.wasSuccessful) {
+              yield UpdateLocalTaskAction(request.result!);
+              yield ClosePageAction();
+            }
+
+            yield HideLoaderAction();
+          },
+        ),
+      ).call;
+
   static Epic<AppState> _partiallyUpdateTask(
     TaskRepository repository,
   ) =>
@@ -60,14 +114,44 @@ class TaskMiddleware extends EpicMiddleware<AppState> {
             );
 
             if (request.wasSuccessful) {
-              yield UpdateLocalTaskAction(request.result!);
-              yield ClosePageAction();
+              yield GetUpdatedTaskAction(action.taskId);
             } else {
+              yield HideLoaderAction();
               yield OpenAlertDialogAction(
                 DialogConfig(content: request.failure!.message),
               );
             }
-            yield HideLoaderAction();
+          },
+        ),
+      ).call;
+
+  static Epic<AppState> _createTask(
+    TaskRepository repository,
+  ) =>
+      TypedEpic(
+        (
+          Stream<CreateTaskAction> actions,
+          EpicStore<AppState> store,
+        ) =>
+            actions.asyncExpand(
+          (action) async* {
+            yield ShowLoaderAction();
+
+            final request = await repository.createTask(
+              profile: store.state.profileState.selected!,
+              title: action.title,
+              addToUserQueue: action.addToUserQueue,
+              queuePosition: action.queuePosition,
+            );
+
+            if (request.wasSuccessful) {
+              yield GetNewTaskAction(request.result!);
+            } else {
+              yield HideLoaderAction();
+              yield OpenAlertDialogAction(
+                DialogConfig(content: request.failure!.message),
+              );
+            }
           },
         ),
       ).call;

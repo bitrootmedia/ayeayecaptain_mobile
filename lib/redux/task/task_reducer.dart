@@ -10,6 +10,7 @@ class TaskReducer extends ReducerClass<TaskState> {
       TypedReducer(_updateTasks).call,
       TypedReducer(_resetTasks).call,
       TypedReducer(_updateLocalTask).call,
+      TypedReducer(_addLocalTask).call,
       TypedReducer(_getTaskAttachments).call,
       TypedReducer(_addTaskAttachments).call,
       TypedReducer(_updateTaskAttachmentsPage).call,
@@ -32,6 +33,17 @@ class TaskReducer extends ReducerClass<TaskState> {
         tasks: Nullable(state.tasks!
             .map((e) => e.id == action.task.id ? action.task : e)
             .toList()),
+      );
+
+  TaskState _addLocalTask(
+    TaskState state,
+    AddLocalTaskAction action,
+  ) =>
+      state.copyWith(
+        tasks: Nullable([
+          ...state.tasks!,
+          action.task,
+        ]),
       );
 
   TaskState _resetTasks(

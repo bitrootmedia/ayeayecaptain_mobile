@@ -133,7 +133,7 @@ class _ChecklistBlockCardState extends State<ChecklistBlockCard> {
                               .add(ChecklistBlockElement.empty());
                         });
                       },
-                      icon: const Icon(Icons.add),
+                      icon: const Icon(Icons.add_rounded),
                     ),
                   ],
                 )

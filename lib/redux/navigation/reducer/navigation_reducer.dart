@@ -16,6 +16,7 @@ class NavigationReducer extends ReducerClass<NavigationState> {
         TypedReducer(_openTaskListPage).call,
         TypedReducer(_openEditTaskPage).call,
         TypedReducer(_openViewImagePage).call,
+        TypedReducer(_openCreateTaskPage).call,
       ])(state, action);
 
   NavigationState _closePage(
@@ -137,6 +138,20 @@ class NavigationReducer extends ReducerClass<NavigationState> {
         currentRoute: state.currentRoute.copyWith(
           isViewImagePageOpened: true,
           imagePath: action.imagePath,
+        ),
+      );
+
+  NavigationState _openCreateTaskPage(
+    NavigationState state,
+    OpenCreateTaskPageAction action,
+  ) =>
+      state.copyWith(
+        previousRoutes: [
+          ...state.previousRoutes,
+          state.currentRoute,
+        ],
+        currentRoute: state.currentRoute.copyWith(
+          isCreateTaskPageOpened: true,
         ),
       );
 }

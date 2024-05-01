@@ -6,6 +6,7 @@ import 'package:ayeayecaptain_mobile/ui/home/page/home_page.dart';
 import 'package:ayeayecaptain_mobile/ui/profile/page/create_profile_page.dart';
 import 'package:ayeayecaptain_mobile/ui/profile/page/profile_list_page.dart';
 import 'package:ayeayecaptain_mobile/ui/project/page/project_list_page.dart';
+import 'package:ayeayecaptain_mobile/ui/task/page/create_task_page.dart';
 import 'package:ayeayecaptain_mobile/ui/task/page/edit_task_page.dart';
 import 'package:ayeayecaptain_mobile/ui/task/page/task_list_page.dart';
 import 'package:ayeayecaptain_mobile/ui/task/page/view_image_page.dart';
@@ -84,6 +85,11 @@ class AppRouterDelegate extends RouterDelegate<NavigationState>
                     child: ViewImagePage(
                       imagePath: viewModel.route.imagePath!,
                     ),
+                  ),
+                if (viewModel.route.isCreateTaskPageOpened)
+                  const MaterialPage(
+                    key: ValueKey('createTaskPage'),
+                    child: CreateTaskPage(),
                   ),
                 // Must be last
                 if (viewModel.route.isAlertDialogOpened)
