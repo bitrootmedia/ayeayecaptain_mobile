@@ -10,6 +10,7 @@ import 'package:ayeayecaptain_mobile/redux/navigation/actions.dart';
 import 'package:ayeayecaptain_mobile/redux/task/actions.dart';
 import 'package:ayeayecaptain_mobile/ui/attachment/widget/attachment_order_dropdown.dart';
 import 'package:ayeayecaptain_mobile/ui/dialog/page/custom_alert_dialog.dart';
+import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
@@ -32,6 +33,7 @@ class AttachmentSection extends StatefulWidget {
 class _AttachmentSectionState extends State<AttachmentSection> {
   final store = di<Store<AppState>>();
   bool _isUploading = false;
+  bool _isDownloading = false;
 
   Future<void> _pickFile(Task task) async {
     final result = await FilePicker.platform.pickFiles();
@@ -80,6 +82,22 @@ class _AttachmentSectionState extends State<AttachmentSection> {
         ),
       ),
     );
+  }
+
+  void _downloadAttachment(Attachment attachment) async {
+    if (_isDownloading) return;
+    _isDownloading = true;
+    final fileName =
+        '${attachment.title}.${attachment.filePath.split('.').last}';
+    final response = await Dio().get(
+      attachment.filePath,
+      options: Options(responseType: ResponseType.bytes),
+    );
+    FilePicker.platform.saveFile(
+      fileName: fileName,
+      bytes: response.data,
+    );
+    _isDownloading = false;
   }
 
   @override
@@ -245,7 +263,7 @@ class _AttachmentSectionState extends State<AttachmentSection> {
                   attachment.thumbnailPath!,
                 ),
           IconButton(
-            onPressed: () {},
+            onPressed: () => _downloadAttachment(attachment),
             icon: const Icon(
               Icons.download_rounded,
             ),
