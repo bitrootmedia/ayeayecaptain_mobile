@@ -1,4 +1,5 @@
 import 'package:ayeayecaptain_mobile/redux/app/app_state.dart';
+import 'package:ayeayecaptain_mobile/redux/task/actions.dart';
 import 'package:ayeayecaptain_mobile/ui/components/loader.dart';
 import 'package:ayeayecaptain_mobile/ui/components/material_dialog.dart';
 import 'package:ayeayecaptain_mobile/ui/dialog/page/custom_alert_dialog.dart';
@@ -110,6 +111,28 @@ class AppRouterDelegate extends RouterDelegate<NavigationState>
 
   @override
   Future<bool> popRoute() {
+    if (_store.state.navigationState.currentRoute.isEditTaskPageOpened &&
+        _store.state.taskState.dataWasChanged) {
+      _store.dispatch(OpenAlertDialogAction(DialogConfig(
+        content: 'Changes have not been saved.',
+        actions: [
+          DialogAction(
+            label: 'It\'s ok',
+            action: ClosePageAction(),
+          ),
+          DialogAction(
+            label: 'Save changes',
+            action: PartiallyUpdateTaskAction(
+              taskId: _store.state.taskState.editingTask!.id,
+              title: _store.state.taskState.editingTask!.title,
+              blocks: _store.state.taskState.editingTask!.blocks,
+            ),
+          ),
+        ],
+      )));
+      return Future.value(true);
+    }
+
     if (navigatorKey.currentState!.widget.pages.length > 1) {
       _store.dispatch(ClosePageAction());
       return Future.value(true);

@@ -35,6 +35,16 @@ class UpdateLocalTaskAction {
   UpdateLocalTaskAction(this.task);
 }
 
+class UpdateTaskDataWasChangedAction {
+  final bool wasChanged;
+  final Task editingTask;
+
+  UpdateTaskDataWasChangedAction(
+    this.wasChanged,
+    this.editingTask,
+  );
+}
+
 class AddTaskAttachmentsAction {
   final String taskId;
   final AttachmentResults attachmentResults;

@@ -14,6 +14,7 @@ class TaskReducer extends ReducerClass<TaskState> {
       TypedReducer(_getTaskAttachments).call,
       TypedReducer(_addTaskAttachments).call,
       TypedReducer(_updateTaskAttachmentsPage).call,
+      TypedReducer(_updateTaskDataWasChanged).call,
     ])(state, action);
   }
 
@@ -52,6 +53,15 @@ class TaskReducer extends ReducerClass<TaskState> {
   ) =>
       state.copyWith(
         tasks: Nullable(null),
+      );
+
+  TaskState _updateTaskDataWasChanged(
+    TaskState state,
+    UpdateTaskDataWasChangedAction action,
+  ) =>
+      state.copyWith(
+        dataWasChanged: action.wasChanged,
+        editingTask: action.editingTask,
       );
 
   TaskState _getTaskAttachments(

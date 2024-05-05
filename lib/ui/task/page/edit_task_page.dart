@@ -48,6 +48,15 @@ class _EditTaskPageState extends State<EditTaskPage> {
     super.initState();
   }
 
+  @override
+  void dispose() {
+    store.dispatch(UpdateTaskDataWasChangedAction(
+      false,
+      _clonedTask,
+    ));
+    super.dispose();
+  }
+
   void _deleteBlock(Block block) {
     setState(() {
       _clonedTask.blocks.remove(block);
@@ -120,6 +129,10 @@ class _EditTaskPageState extends State<EditTaskPage> {
     setState(() {
       _dataWasChanged = !Task.tasksIdentical(widget.task, _clonedTask);
     });
+    store.dispatch(UpdateTaskDataWasChangedAction(
+      _dataWasChanged,
+      _clonedTask,
+    ));
   }
 
   void _onBackPressed() {
