@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:ayeayecaptain_mobile/app/constants.dart';
 import 'package:ayeayecaptain_mobile/app/globals.dart';
+import 'package:ayeayecaptain_mobile/app/utils/validation.dart';
 import 'package:ayeayecaptain_mobile/domain/block/entity/block.dart';
 import 'package:ayeayecaptain_mobile/domain/block/entity/checklist_block.dart';
 import 'package:ayeayecaptain_mobile/domain/block/entity/image_block.dart';
@@ -12,6 +13,7 @@ import 'package:ayeayecaptain_mobile/redux/app/app_state.dart';
 import 'package:ayeayecaptain_mobile/redux/navigation/actions.dart';
 import 'package:ayeayecaptain_mobile/redux/task/actions.dart';
 import 'package:ayeayecaptain_mobile/ui/attachment/widget/attachment_section.dart';
+import 'package:ayeayecaptain_mobile/ui/components/custom_text_field.dart';
 import 'package:ayeayecaptain_mobile/ui/components/unfocusable.dart';
 import 'package:ayeayecaptain_mobile/ui/task/widget/checklist_block_card.dart';
 import 'package:ayeayecaptain_mobile/ui/task/widget/image_block_card.dart';
@@ -36,6 +38,7 @@ class _EditTaskPageState extends State<EditTaskPage> {
   final store = di<Store<AppState>>();
   late Task _clonedTask;
   bool _isUploading = false;
+  bool _isTitleEditing = false;
 
   @override
   void initState() {
@@ -67,8 +70,9 @@ class _EditTaskPageState extends State<EditTaskPage> {
 
   void _save() {
     store.dispatch(PartiallyUpdateTaskAction(
-      _clonedTask.id,
-      _clonedTask.blocks,
+      taskId: _clonedTask.id,
+      title: _clonedTask.title,
+      blocks: _clonedTask.blocks,
     ));
   }
 
@@ -102,6 +106,10 @@ class _EditTaskPageState extends State<EditTaskPage> {
     ));
   }
 
+  void _updateTitle(String value) {
+    _clonedTask = _clonedTask.copyWith(title: value);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Unfocusable(
@@ -128,13 +136,27 @@ class _EditTaskPageState extends State<EditTaskPage> {
             children: [
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Text(
-                  _clonedTask.title,
-                  style: const TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
+                child: _isTitleEditing
+                    ? CustomTextField(
+                        label: 'Title',
+                        initialValue: widget.task.title,
+                        validator: isNotEmptyValidator,
+                        onChanged: _updateTitle,
+                      )
+                    : GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _isTitleEditing = true;
+                          });
+                        },
+                        child: Text(
+                          _clonedTask.title,
+                          style: const TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
               ),
               const SizedBox(height: 24),
               ReorderableListView(

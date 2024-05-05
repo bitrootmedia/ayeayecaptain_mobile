@@ -110,6 +110,7 @@ class TaskMiddleware extends EpicMiddleware<AppState> {
             final request = await repository.partiallyUpdateTask(
               profile: store.state.profileState.selected!,
               taskId: action.taskId,
+              title: action.title,
               blocks: action.blocks,
             );
 

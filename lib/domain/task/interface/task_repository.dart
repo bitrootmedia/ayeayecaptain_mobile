@@ -9,6 +9,7 @@ abstract class TaskRepository {
   Future<FailureOrResult<void>> partiallyUpdateTask({
     required Profile profile,
     required String taskId,
+    required String title,
     required List<Block> blocks,
   });
 

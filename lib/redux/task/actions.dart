@@ -19,9 +19,14 @@ class ResetTasksAction {}
 
 class PartiallyUpdateTaskAction {
   final String taskId;
+  final String title;
   final List<Block> blocks;
 
-  PartiallyUpdateTaskAction(this.taskId, this.blocks);
+  PartiallyUpdateTaskAction({
+    required this.taskId,
+    required this.title,
+    required this.blocks,
+  });
 }
 
 class UpdateLocalTaskAction {

@@ -34,12 +34,14 @@ class TaskRepository implements domain.TaskRepository {
   Future<FailureOrResult<void>> partiallyUpdateTask({
     required Profile profile,
     required String taskId,
+    required String title,
     required List<Block> blocks,
   }) async {
     try {
       await _client.patch(
         '${profile.backendUrl}/api/task/$taskId',
         data: {
+          'title': title,
           'blocks': blocks
               .map((e) => BlockDto.fromDomain(e))
               .map((e) => e.toJson())

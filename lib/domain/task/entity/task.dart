@@ -85,6 +85,7 @@ class Task {
       );
 
   Task copyWith({
+    String? title,
     List<Attachment>? attachments,
     int? attachmentsTotal,
     int? attachmentsPageSize,
@@ -94,7 +95,7 @@ class Task {
   }) =>
       Task(
         id: id,
-        title: title,
+        title: title ?? this.title,
         status: status,
         etaDate: etaDate,
         createdAt: createdAt,
