@@ -15,6 +15,7 @@ import 'package:ayeayecaptain_mobile/redux/task/actions.dart';
 import 'package:ayeayecaptain_mobile/ui/attachment/widget/attachment_section.dart';
 import 'package:ayeayecaptain_mobile/ui/components/custom_text_field.dart';
 import 'package:ayeayecaptain_mobile/ui/components/unfocusable.dart';
+import 'package:ayeayecaptain_mobile/ui/dialog/page/custom_alert_dialog.dart';
 import 'package:ayeayecaptain_mobile/ui/task/widget/checklist_block_card.dart';
 import 'package:ayeayecaptain_mobile/ui/task/widget/image_block_card.dart';
 import 'package:ayeayecaptain_mobile/ui/task/widget/markdown_block_card.dart';
@@ -121,6 +122,26 @@ class _EditTaskPageState extends State<EditTaskPage> {
     });
   }
 
+  void _onBackPressed() {
+    if (_dataWasChanged) {
+      store.dispatch(OpenAlertDialogAction(DialogConfig(
+        content: 'Changes have not been saved.',
+        actions: [
+          DialogAction(
+            label: 'It\'s ok',
+            action: ClosePageAction(),
+          ),
+          DialogAction(
+            label: 'Save changes',
+            onPressed: _save,
+          ),
+        ],
+      )));
+    } else {
+      store.dispatch(ClosePageAction());
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Unfocusable(
@@ -130,7 +151,7 @@ class _EditTaskPageState extends State<EditTaskPage> {
           centerTitle: true,
           automaticallyImplyLeading: false,
           leading: IconButton(
-            onPressed: () => store.dispatch(ClosePageAction()),
+            onPressed: _onBackPressed,
             icon: const Icon(Icons.arrow_back_ios_new_rounded),
           ),
           actions: [
