@@ -30,19 +30,11 @@ class EditTaskPage extends StatefulWidget {
 class _EditTaskPageState extends State<EditTaskPage> {
   final store = di<Store<AppState>>();
   late Task _clonedTask;
-  bool _isEditingNewBlockOnRebuild = true;
 
   @override
   void initState() {
     _clonedTask = widget.task.clone();
     super.initState();
-  }
-
-  void _updateBlock(Block oldBlock, Block newBlock) {
-    setState(() {
-      _isEditingNewBlockOnRebuild = false;
-      _clonedTask.blocks[_clonedTask.blocks.indexOf(oldBlock)] = newBlock;
-    });
   }
 
   void _deleteBlock(Block block) {
@@ -53,7 +45,6 @@ class _EditTaskPageState extends State<EditTaskPage> {
 
   void _addBlock(Block block) {
     setState(() {
-      _isEditingNewBlockOnRebuild = true;
       _clonedTask.blocks.add(block);
     });
   }
@@ -131,28 +122,19 @@ class _EditTaskPageState extends State<EditTaskPage> {
                           ? MarkdownBlockCard(
                               key: ObjectKey(e),
                               block: e,
-                              onBlockChanged: _updateBlock,
                               onBlockDeleted: _deleteBlock,
-                              isEditing: e.content.isEmpty &&
-                                  _isEditingNewBlockOnRebuild,
                             )
                           : e is ImageBlock
                               ? ImageBlockCard(
                                   key: ObjectKey(e),
                                   block: e,
-                                  onBlockChanged: _updateBlock,
                                   onBlockDeleted: _deleteBlock,
                                   taskId: _clonedTask.id,
-                                  isEditing: e.path.isEmpty &&
-                                      _isEditingNewBlockOnRebuild,
                                 )
                               : ChecklistBlockCard(
                                   key: ObjectKey(e),
                                   block: e as ChecklistBlock,
-                                  onBlockChanged: _updateBlock,
                                   onBlockDeleted: _deleteBlock,
-                                  isEditing:
-                                      e.isEmpty && _isEditingNewBlockOnRebuild,
                                 ),
                     )
                     .toList(),

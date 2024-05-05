@@ -1,11 +1,9 @@
 import 'package:ayeayecaptain_mobile/domain/block/entity/block.dart';
-import 'package:flutter/foundation.dart';
 
-@immutable
 class ImageBlock extends Block {
-  final String path;
+  String path;
 
-  const ImageBlock({
+  ImageBlock({
     required super.type,
     required this.path,
   });

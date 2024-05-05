@@ -4,8 +4,6 @@ class BlockCard extends StatelessWidget {
   final Widget content;
   final bool isEditing;
   final VoidCallback onEdit;
-  final VoidCallback onSave;
-  final VoidCallback onCancel;
   final VoidCallback onDelete;
 
   const BlockCard({
@@ -13,8 +11,6 @@ class BlockCard extends StatelessWidget {
     required this.content,
     required this.isEditing,
     required this.onEdit,
-    required this.onSave,
-    required this.onCancel,
     required this.onDelete,
   });
 
@@ -40,31 +36,14 @@ class BlockCard extends StatelessWidget {
           const SizedBox(width: 4),
           Column(
             children: [
-              if (isEditing)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
-                  child: getButton(
-                    icon: Icons.check,
-                    onPressed: onSave,
-                  ),
-                ),
-              if (isEditing)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
-                  child: getButton(
-                    icon: Icons.close,
-                    onPressed: onCancel,
-                  ),
-                ),
+              getButton(
+                icon: Icons.create,
+                onPressed: onEdit,
+              ),
               if (isEditing)
                 getButton(
                   icon: Icons.delete,
                   onPressed: onDelete,
-                ),
-              if (!isEditing)
-                getButton(
-                  icon: Icons.create,
-                  onPressed: onEdit,
                 ),
             ],
           ),

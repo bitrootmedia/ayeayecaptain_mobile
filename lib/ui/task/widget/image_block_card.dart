@@ -17,18 +17,14 @@ final _imagePicker = ImagePicker();
 
 class ImageBlockCard extends StatefulWidget {
   final ImageBlock block;
-  final void Function(Block, Block) onBlockChanged;
   final void Function(Block) onBlockDeleted;
   final String taskId;
-  final bool? isEditing;
 
   const ImageBlockCard({
     super.key,
     required this.block,
-    required this.onBlockChanged,
     required this.onBlockDeleted,
     required this.taskId,
-    this.isEditing,
   });
 
   @override
@@ -39,14 +35,11 @@ class _ImageBlockCardState extends State<ImageBlockCard> {
   final store = di<Store<AppState>>();
   final profile = di<Store<AppState>>().state.profileState.selected!;
   bool _isEditing = false;
-  String? _newImagePath;
   bool _isUploading = false;
 
   @override
   void initState() {
-    if (widget.isEditing != null) {
-      _isEditing = widget.isEditing!;
-    }
+    _isEditing = widget.block.path.isEmpty;
     super.initState();
   }
 
@@ -66,7 +59,8 @@ class _ImageBlockCardState extends State<ImageBlockCard> {
       });
       if (request.wasSuccessful) {
         setState(() {
-          _newImagePath = request.result!;
+          widget.block.path = request.result!;
+          _isEditing = false;
         });
         _resetAttachments();
       }
@@ -116,25 +110,7 @@ class _ImageBlockCardState extends State<ImageBlockCard> {
       isEditing: _isEditing,
       onEdit: () {
         setState(() {
-          _isEditing = true;
-        });
-      },
-      onSave: () {
-        if (_newImagePath != null) {
-          widget.onBlockChanged(
-            widget.block,
-            widget.block.copyWith(path: _newImagePath),
-          );
-          _newImagePath = null;
-        }
-        setState(() {
-          _isEditing = false;
-        });
-      },
-      onCancel: () {
-        setState(() {
-          _newImagePath = null;
-          _isEditing = false;
+          _isEditing = !_isEditing;
         });
       },
       onDelete: () {
@@ -171,14 +147,6 @@ class _ImageBlockCardState extends State<ImageBlockCard> {
                           ),
                         ],
                       ),
-                      if (_newImagePath != null)
-                        Padding(
-                          padding: const EdgeInsets.only(top: 8),
-                          child: _getImage(
-                            '${profile.backendUrl}/$_newImagePath',
-                            cacheHeight: 60,
-                          ),
-                        ),
                       if (_isUploading) const Text('Uploading...'),
                     ],
                   )

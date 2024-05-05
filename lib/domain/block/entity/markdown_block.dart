@@ -1,11 +1,9 @@
 import 'package:ayeayecaptain_mobile/domain/block/entity/block.dart';
-import 'package:flutter/foundation.dart';
 
-@immutable
 class MarkdownBlock extends Block {
-  final String content;
+  String content;
 
-  const MarkdownBlock({
+  MarkdownBlock({
     required super.type,
     required this.content,
   });

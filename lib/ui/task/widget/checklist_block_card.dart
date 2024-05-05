@@ -7,16 +7,12 @@ import 'package:flutter/material.dart';
 
 class ChecklistBlockCard extends StatefulWidget {
   final ChecklistBlock block;
-  final void Function(Block, Block) onBlockChanged;
   final void Function(Block) onBlockDeleted;
-  final bool? isEditing;
 
   const ChecklistBlockCard({
     super.key,
     required this.block,
-    required this.onBlockChanged,
     required this.onBlockDeleted,
-    this.isEditing,
   });
 
   @override
@@ -25,27 +21,11 @@ class ChecklistBlockCard extends StatefulWidget {
 
 class _ChecklistBlockCardState extends State<ChecklistBlockCard> {
   bool _isEditing = false;
-  late String _title;
-  late List<ChecklistBlockElement> _elementsBeforeEdit;
 
   @override
   void initState() {
-    _title = widget.block.title;
-    _elementsBeforeEdit = cloneElements(widget.block.elements);
-    if (widget.isEditing != null) {
-      _isEditing = widget.isEditing!;
-    }
+    _isEditing = widget.block.isEmpty;
     super.initState();
-  }
-
-  List<ChecklistBlockElement> cloneElements(
-      List<ChecklistBlockElement> elements) {
-    return elements
-        .map((e) => ChecklistBlockElement(
-              label: e.label,
-              checked: e.checked,
-            ))
-        .toList();
   }
 
   @override
@@ -53,33 +33,9 @@ class _ChecklistBlockCardState extends State<ChecklistBlockCard> {
     return BlockCard(
       isEditing: _isEditing,
       onEdit: () {
-        _elementsBeforeEdit = cloneElements(widget.block.elements);
         setState(() {
-          _isEditing = true;
+          _isEditing = !_isEditing;
         });
-      },
-      onSave: () {
-        widget.onBlockChanged(
-          widget.block,
-          widget.block.copyWith(
-            title: _title,
-          ),
-        );
-        setState(() {
-          _isEditing = false;
-        });
-      },
-      onCancel: () {
-        setState(() {
-          _title = widget.block.title;
-          _isEditing = false;
-        });
-        widget.onBlockChanged(
-          widget.block,
-          widget.block.copyWith(
-            elements: _elementsBeforeEdit,
-          ),
-        );
       },
       onDelete: () {
         widget.onBlockDeleted(widget.block);
@@ -96,8 +52,8 @@ class _ChecklistBlockCardState extends State<ChecklistBlockCard> {
                   children: [
                     CustomTextField(
                       label: 'Checklist title',
-                      initialValue: _title,
-                      onChanged: (value) => _title = value.trim(),
+                      initialValue: widget.block.title,
+                      onChanged: (value) => widget.block.title = value.trim(),
                     ),
                     ...widget.block.elements.map(
                       (e) => Padding(
