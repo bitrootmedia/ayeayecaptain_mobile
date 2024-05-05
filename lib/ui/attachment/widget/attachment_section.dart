@@ -1,9 +1,6 @@
-import 'dart:io';
-
 import 'package:ayeayecaptain_mobile/app/constants.dart';
 import 'package:ayeayecaptain_mobile/app/globals.dart';
 import 'package:ayeayecaptain_mobile/domain/attachment/entity/attachment.dart';
-import 'package:ayeayecaptain_mobile/domain/file/interface/file_repository.dart';
 import 'package:ayeayecaptain_mobile/domain/task/entity/task.dart';
 import 'package:ayeayecaptain_mobile/redux/app/app_state.dart';
 import 'package:ayeayecaptain_mobile/redux/navigation/actions.dart';
@@ -32,38 +29,7 @@ class AttachmentSection extends StatefulWidget {
 
 class _AttachmentSectionState extends State<AttachmentSection> {
   final store = di<Store<AppState>>();
-  bool _isUploading = false;
   bool _isDownloading = false;
-
-  Future<void> _pickFile(Task task) async {
-    final result = await FilePicker.platform.pickFiles();
-    if (result != null) {
-      setState(() {
-        _isUploading = true;
-      });
-      final request = await di<FileRepository>().uploadFile(
-        profile: store.state.profileState.selected!,
-        taskId: widget.taskId,
-        file: File(result.files.single.path!),
-      );
-      setState(() {
-        _isUploading = false;
-      });
-      if (request.wasSuccessful) {
-        _resetAttachments(task);
-      }
-    }
-  }
-
-  void _resetAttachments(Task task) {
-    store.dispatch(GetTaskAttachmentsAction(
-      taskId: widget.taskId,
-      page: task.attachmentsCurrentPage ?? 1,
-      pageSize: attachmentsPageSize,
-      orderBy: task.attachmentsOrderBy,
-      shouldReset: true,
-    ));
-  }
 
   void _deleteAttachments(String id, Task task) {
     store.dispatch(
@@ -109,67 +75,44 @@ class _AttachmentSectionState extends State<AttachmentSection> {
       builder: (context, viewModel) {
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  const Text(
-                    'Attachments',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  IconButton(
-                    onPressed: () => _pickFile(viewModel.task),
-                    icon: const Icon(Icons.attach_file_rounded),
-                  ),
-                  if (_isUploading) const Text('Uploading...'),
-                ],
-              ),
-              AttachmentOrderDropdown(task: viewModel.task),
-              const SizedBox(height: 12),
-              viewModel.isLoaded
-                  ? viewModel.hasAttachments
-                      ? Column(
-                          children: [
-                            Container(
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(4),
-                              ),
-                              child: ListView.separated(
-                                physics: const NeverScrollableScrollPhysics(),
-                                shrinkWrap: true,
-                                itemCount:
-                                    viewModel.currentPageAttachments.length,
-                                itemBuilder: (context, index) =>
-                                    getAttachmentTale(
-                                  viewModel.currentPageAttachments[index],
-                                  viewModel.task,
-                                ),
-                                separatorBuilder: (context, index) => Divider(
-                                  thickness: 0.5,
-                                  height: 0.5,
-                                  color: Colors.grey[300],
-                                ),
-                              ),
+          child: viewModel.isLoaded
+              ? viewModel.hasAttachments
+                  ? Column(
+                      children: [
+                        AttachmentOrderDropdown(task: viewModel.task),
+                        const SizedBox(height: 12),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          child: ListView.separated(
+                            physics: const NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            itemCount: viewModel.currentPageAttachments.length,
+                            itemBuilder: (context, index) => getAttachmentTale(
+                              viewModel.currentPageAttachments[index],
+                              viewModel.task,
                             ),
-                            getPagination(
-                              current: viewModel.task.attachmentsCurrentPage!,
-                              total: viewModel.task.attachmentsPagesTotal!,
-                              goToNext: viewModel.getGoToNext(),
-                              goToPrevious: viewModel.getGoToPrevious(),
+                            separatorBuilder: (context, index) => Divider(
+                              thickness: 0.5,
+                              height: 0.5,
+                              color: Colors.grey[300],
                             ),
-                          ],
-                        )
-                      : const SizedBox.shrink()
-                  : const Center(
-                      child: CircularProgressIndicator(),
-                    ),
-            ],
-          ),
+                          ),
+                        ),
+                        getPagination(
+                          current: viewModel.task.attachmentsCurrentPage!,
+                          total: viewModel.task.attachmentsPagesTotal!,
+                          goToNext: viewModel.getGoToNext(),
+                          goToPrevious: viewModel.getGoToPrevious(),
+                        ),
+                      ],
+                    )
+                  : const SizedBox.shrink()
+              : const Center(
+                  child: CircularProgressIndicator(),
+                ),
         );
       },
     );
