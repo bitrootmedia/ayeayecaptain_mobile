@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:markdown_editable_textinput/format_markdown.dart';
 import 'package:markdown_editable_textinput/markdown_text_input.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class MarkdownBlockCard extends StatefulWidget {
   final MarkdownBlock block;
@@ -66,7 +67,17 @@ class _MarkdownBlockCardState extends State<MarkdownBlockCard> {
                         textAlign: TextAlign.center,
                         style: TextStyle(color: Colors.grey),
                       )
-                    : MarkdownBody(data: widget.block.content),
+                    : MarkdownBody(
+                        data: widget.block.content,
+                        onTapLink: (text, href, title) async {
+                          if (href != null && href.isNotEmpty) {
+                            final url = Uri.parse(href);
+                            if (!await launchUrl(url)) {
+                              throw Exception('Could not launch $url');
+                            }
+                          }
+                        },
+                      ),
               ),
             ),
     );
