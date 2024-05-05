@@ -119,4 +119,13 @@ class Task {
             attachmentsPagesTotal ?? this.attachmentsPagesTotal,
         attachmentsOrderBy: attachmentsOrderBy ?? this.attachmentsOrderBy,
       );
+
+  @override
+  String toString() {
+    return 'Task {title: $title, blocks: $blocks}';
+  }
+
+  static bool tasksIdentical(Task a, Task b) {
+    return a.toString() == b.toString();
+  }
 }

@@ -27,4 +27,9 @@ class ImageBlock extends Block {
         type: type,
         path: path ?? this.path,
       );
+
+  @override
+  String toString() {
+    return 'ImageBlock {path: $path}';
+  }
 }

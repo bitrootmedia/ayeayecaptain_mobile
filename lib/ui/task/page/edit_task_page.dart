@@ -39,6 +39,7 @@ class _EditTaskPageState extends State<EditTaskPage> {
   late Task _clonedTask;
   bool _isUploading = false;
   bool _isTitleEditing = false;
+  bool _dataWasChanged = false;
 
   @override
   void initState() {
@@ -50,12 +51,14 @@ class _EditTaskPageState extends State<EditTaskPage> {
     setState(() {
       _clonedTask.blocks.remove(block);
     });
+    _checkIfDataWasChanged();
   }
 
   void _addBlock(Block block) {
     setState(() {
       _clonedTask.blocks.add(block);
     });
+    _checkIfDataWasChanged();
   }
 
   void _reorderBlocks(int oldIndex, int newIndex) {
@@ -66,6 +69,7 @@ class _EditTaskPageState extends State<EditTaskPage> {
       }
       _clonedTask.blocks.insert(newIndex, block);
     });
+    _checkIfDataWasChanged();
   }
 
   void _save() {
@@ -108,6 +112,13 @@ class _EditTaskPageState extends State<EditTaskPage> {
 
   void _updateTitle(String value) {
     _clonedTask = _clonedTask.copyWith(title: value);
+    _checkIfDataWasChanged();
+  }
+
+  void _checkIfDataWasChanged() {
+    setState(() {
+      _dataWasChanged = !Task.tasksIdentical(widget.task, _clonedTask);
+    });
   }
 
   @override
@@ -125,7 +136,10 @@ class _EditTaskPageState extends State<EditTaskPage> {
           actions: [
             IconButton(
               onPressed: _save,
-              icon: const Icon(Icons.save),
+              icon: Icon(
+                Icons.save,
+                color: _dataWasChanged ? Colors.orange : Colors.white,
+              ),
             ),
           ],
         ),
@@ -170,6 +184,7 @@ class _EditTaskPageState extends State<EditTaskPage> {
                               key: ObjectKey(e),
                               block: e,
                               onBlockDeleted: _deleteBlock,
+                              checkIfDataWasChanged: _checkIfDataWasChanged,
                             )
                           : e is ImageBlock
                               ? ImageBlockCard(
@@ -177,11 +192,13 @@ class _EditTaskPageState extends State<EditTaskPage> {
                                   block: e,
                                   onBlockDeleted: _deleteBlock,
                                   taskId: _clonedTask.id,
+                                  checkIfDataWasChanged: _checkIfDataWasChanged,
                                 )
                               : ChecklistBlockCard(
                                   key: ObjectKey(e),
                                   block: e as ChecklistBlock,
                                   onBlockDeleted: _deleteBlock,
+                                  checkIfDataWasChanged: _checkIfDataWasChanged,
                                 ),
                     )
                     .toList(),

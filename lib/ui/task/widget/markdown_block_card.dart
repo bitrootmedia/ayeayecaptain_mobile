@@ -9,11 +9,13 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 class MarkdownBlockCard extends StatefulWidget {
   final MarkdownBlock block;
   final void Function(Block) onBlockDeleted;
+  final VoidCallback checkIfDataWasChanged;
 
   const MarkdownBlockCard({
     super.key,
     required this.block,
     required this.onBlockDeleted,
+    required this.checkIfDataWasChanged,
   });
 
   @override
@@ -45,6 +47,7 @@ class _MarkdownBlockCardState extends State<MarkdownBlockCard> {
           ? MarkdownTextInput(
               (String value) {
                 widget.block.content = value;
+                widget.checkIfDataWasChanged();
               },
               widget.block.content,
               maxLines: 6,

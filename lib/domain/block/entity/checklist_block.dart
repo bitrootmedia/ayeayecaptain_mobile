@@ -36,4 +36,9 @@ class ChecklistBlock extends Block {
         title: title ?? this.title,
         elements: elements ?? this.elements,
       );
+
+  @override
+  String toString() {
+    return 'ChecklistBlock {title: $title, elements: $elements}';
+  }
 }

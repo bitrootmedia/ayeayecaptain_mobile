@@ -8,11 +8,13 @@ import 'package:flutter/material.dart';
 class ChecklistBlockCard extends StatefulWidget {
   final ChecklistBlock block;
   final void Function(Block) onBlockDeleted;
+  final VoidCallback checkIfDataWasChanged;
 
   const ChecklistBlockCard({
     super.key,
     required this.block,
     required this.onBlockDeleted,
+    required this.checkIfDataWasChanged,
   });
 
   @override
@@ -53,7 +55,10 @@ class _ChecklistBlockCardState extends State<ChecklistBlockCard> {
                     CustomTextField(
                       label: 'Checklist title',
                       initialValue: widget.block.title,
-                      onChanged: (value) => widget.block.title = value.trim(),
+                      onChanged: (value) {
+                        widget.block.title = value.trim();
+                        widget.checkIfDataWasChanged();
+                      },
                     ),
                     ...widget.block.elements.map(
                       (e) => Padding(
@@ -67,6 +72,7 @@ class _ChecklistBlockCardState extends State<ChecklistBlockCard> {
                                 initialValue: e.label,
                                 onChanged: (value) {
                                   e.label = value.trim();
+                                  widget.checkIfDataWasChanged();
                                 },
                               ),
                             ),
@@ -75,6 +81,7 @@ class _ChecklistBlockCardState extends State<ChecklistBlockCard> {
                                 setState(() {
                                   widget.block.elements.remove(e);
                                 });
+                                widget.checkIfDataWasChanged();
                               },
                               icon: const Icon(Icons.delete),
                             ),
@@ -88,6 +95,7 @@ class _ChecklistBlockCardState extends State<ChecklistBlockCard> {
                           widget.block.elements
                               .add(ChecklistBlockElement.empty());
                         });
+                        widget.checkIfDataWasChanged();
                       },
                       icon: const Icon(Icons.add_rounded),
                     ),
@@ -120,6 +128,7 @@ class _ChecklistBlockCardState extends State<ChecklistBlockCard> {
                                     e.checked = value;
                                   }
                                 });
+                                widget.checkIfDataWasChanged();
                               }),
                         ),
                       ],

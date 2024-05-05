@@ -27,4 +27,9 @@ class MarkdownBlock extends Block {
         type: type,
         content: content ?? this.content,
       );
+
+  @override
+  String toString() {
+    return 'MarkdownBlock {content: $content}';
+  }
 }

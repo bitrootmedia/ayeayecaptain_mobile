@@ -19,12 +19,14 @@ class ImageBlockCard extends StatefulWidget {
   final ImageBlock block;
   final void Function(Block) onBlockDeleted;
   final String taskId;
+  final VoidCallback checkIfDataWasChanged;
 
   const ImageBlockCard({
     super.key,
     required this.block,
     required this.onBlockDeleted,
     required this.taskId,
+    required this.checkIfDataWasChanged,
   });
 
   @override
@@ -63,6 +65,7 @@ class _ImageBlockCardState extends State<ImageBlockCard> {
           _isEditing = false;
         });
         _resetAttachments();
+        widget.checkIfDataWasChanged();
       }
     }
   }

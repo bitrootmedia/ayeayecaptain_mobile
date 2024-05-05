@@ -15,4 +15,9 @@ class ChecklistBlockElement {
         label: label,
         checked: checked,
       );
+
+  @override
+  String toString() {
+    return 'ChecklistBlockElement {label: $label, checked: $checked}';
+  }
 }
