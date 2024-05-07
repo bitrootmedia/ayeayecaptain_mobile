@@ -2,11 +2,17 @@ import 'package:ayeayecaptain_mobile/app/utils/failure_or_result.dart';
 import 'package:ayeayecaptain_mobile/domain/block/entity/block.dart';
 import 'package:ayeayecaptain_mobile/domain/profile/entity/profile.dart';
 import 'package:ayeayecaptain_mobile/domain/task/entity/task.dart';
+import 'package:ayeayecaptain_mobile/domain/task/entity/task_results.dart';
 
 abstract class TaskRepository {
-  Future<FailureOrResult<List<Task>>> getTasks(Profile profile);
+  Future<FailureOrResult<TaskResults>> getTasks({
+    required Profile profile,
+    required int page,
+    required int pageSize,
+    required String orderBy,
+  });
 
-  Future<FailureOrResult<void>> partiallyUpdateTask({
+  Future<FailureOrResult<void>> saveTaskDetails({
     required Profile profile,
     required String taskId,
     required String title,

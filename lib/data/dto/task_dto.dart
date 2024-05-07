@@ -53,7 +53,7 @@ class TaskDto {
     this.isUrgent,
   );
 
-  Task toDomain() => Task(
+  Task toDomain(int page) => Task(
         id: id,
         title: title,
         status: status,
@@ -70,6 +70,7 @@ class TaskDto {
         owner: owner.toDomain(),
         isClosed: isClosed,
         isUrgent: isUrgent,
+        page: page,
       );
 
   static List<BlockDto> _blocksFromJson(List<dynamic> json) {

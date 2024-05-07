@@ -122,7 +122,7 @@ class AppRouterDelegate extends RouterDelegate<NavigationState>
           ),
           DialogAction(
             label: 'Save changes',
-            action: PartiallyUpdateTaskAction(
+            action: SaveTaskDetailsAction(
               taskId: _store.state.taskState.editingTask!.id,
               title: _store.state.taskState.editingTask!.title,
               blocks: _store.state.taskState.editingTask!.blocks,

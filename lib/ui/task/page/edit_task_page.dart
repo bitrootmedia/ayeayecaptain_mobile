@@ -50,6 +50,16 @@ class _EditTaskPageState extends State<EditTaskPage> {
 
   @override
   void dispose() {
+    // page == 0 means only for new task
+    if (_clonedTask.page == 0) {
+      store.dispatch(GetTasksAction(
+        page: store.state.taskState.page!,
+        pageSize: store.state.taskState.pageSize!,
+        orderBy: tasksOrderBy,
+        shouldReset: true,
+      ));
+    }
+
     store.dispatch(UpdateTaskDataWasChangedAction(
       false,
       _clonedTask,
@@ -83,7 +93,7 @@ class _EditTaskPageState extends State<EditTaskPage> {
   }
 
   void _save() {
-    store.dispatch(PartiallyUpdateTaskAction(
+    store.dispatch(SaveTaskDetailsAction(
       taskId: _clonedTask.id,
       title: _clonedTask.title,
       blocks: _clonedTask.blocks,

@@ -1,38 +1,50 @@
 import 'package:ayeayecaptain_mobile/domain/attachment/entity/attachment_results.dart';
 import 'package:ayeayecaptain_mobile/domain/block/entity/block.dart';
-import 'package:ayeayecaptain_mobile/domain/profile/entity/profile.dart';
 import 'package:ayeayecaptain_mobile/domain/task/entity/task.dart';
+import 'package:ayeayecaptain_mobile/domain/task/entity/task_results.dart';
 
 class GetTasksAction {
-  final Profile profile;
+  final int page;
+  final int pageSize;
+  final String orderBy;
+  final bool shouldReset;
 
-  GetTasksAction(this.profile);
+  GetTasksAction({
+    required this.page,
+    required this.pageSize,
+    required this.orderBy,
+    this.shouldReset = false,
+  });
 }
 
-class UpdateTasksAction {
-  final List<Task> tasks;
+class AddTasksAction {
+  final TaskResults taskResults;
+  final bool shouldReset;
 
-  UpdateTasksAction(this.tasks);
+  AddTasksAction({
+    required this.taskResults,
+    this.shouldReset = false,
+  });
+}
+
+class UpdateTasksPageAction {
+  final int page;
+
+  UpdateTasksPageAction(this.page);
 }
 
 class ResetTasksAction {}
 
-class PartiallyUpdateTaskAction {
+class SaveTaskDetailsAction {
   final String taskId;
   final String title;
   final List<Block> blocks;
 
-  PartiallyUpdateTaskAction({
+  SaveTaskDetailsAction({
     required this.taskId,
     required this.title,
     required this.blocks,
   });
-}
-
-class UpdateLocalTaskAction {
-  final Task task;
-
-  UpdateLocalTaskAction(this.task);
 }
 
 class UpdateTaskDataWasChangedAction {
@@ -107,20 +119,14 @@ class CreateTaskAction {
   });
 }
 
-class GetNewTaskAction {
+class GetTaskAction {
   final String id;
 
-  GetNewTaskAction(this.id);
+  GetTaskAction(this.id);
 }
 
-class GetUpdatedTaskAction {
-  final String id;
-
-  GetUpdatedTaskAction(this.id);
-}
-
-class AddLocalTaskAction {
+class AddTaskAction {
   final Task task;
 
-  AddLocalTaskAction(this.task);
+  AddTaskAction(this.task);
 }

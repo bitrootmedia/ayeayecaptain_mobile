@@ -7,10 +7,11 @@ class TaskReducer extends ReducerClass<TaskState> {
   @override
   TaskState call(TaskState state, action) {
     return combineReducers<TaskState>([
-      TypedReducer(_updateTasks).call,
+      TypedReducer(_getTasks).call,
+      TypedReducer(_addTask).call,
+      TypedReducer(_addTasks).call,
+      TypedReducer(_updateTasksPage).call,
       TypedReducer(_resetTasks).call,
-      TypedReducer(_updateLocalTask).call,
-      TypedReducer(_addLocalTask).call,
       TypedReducer(_getTaskAttachments).call,
       TypedReducer(_addTaskAttachments).call,
       TypedReducer(_updateTaskAttachmentsPage).call,
@@ -18,33 +19,53 @@ class TaskReducer extends ReducerClass<TaskState> {
     ])(state, action);
   }
 
-  TaskState _updateTasks(
+  TaskState _getTasks(
     TaskState state,
-    UpdateTasksAction action,
+    GetTasksAction action,
   ) =>
       state.copyWith(
-        tasks: Nullable(action.tasks),
+        isTasksLoading: true,
       );
 
-  TaskState _updateLocalTask(
+  TaskState _addTask(
     TaskState state,
-    UpdateLocalTaskAction action,
+    AddTaskAction action,
   ) =>
       state.copyWith(
-        tasks: Nullable(state.tasks!
-            .map((e) => e.id == action.task.id ? action.task : e)
-            .toList()),
+        tasks: Nullable(
+          [
+            ...?state.tasks,
+            action.task,
+          ],
+        ),
       );
 
-  TaskState _addLocalTask(
+  TaskState _addTasks(
     TaskState state,
-    AddLocalTaskAction action,
+    AddTasksAction action,
   ) =>
       state.copyWith(
-        tasks: Nullable([
-          ...state.tasks!,
-          action.task,
-        ]),
+        tasks: Nullable(
+          action.shouldReset
+              ? action.taskResults.tasks
+              : [
+                  ...?state.tasks,
+                  ...action.taskResults.tasks,
+                ],
+        ),
+        tasksTotal: action.taskResults.tasksTotal,
+        pageSize: action.taskResults.pageSize,
+        page: action.taskResults.page,
+        pagesTotal: action.taskResults.pagesTotal,
+        isTasksLoading: false,
+      );
+
+  TaskState _updateTasksPage(
+    TaskState state,
+    UpdateTasksPageAction action,
+  ) =>
+      state.copyWith(
+        page: action.page,
       );
 
   TaskState _resetTasks(

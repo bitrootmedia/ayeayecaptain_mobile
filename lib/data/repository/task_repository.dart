@@ -3,8 +3,10 @@ import 'package:ayeayecaptain_mobile/app/utils/failure_codes.dart';
 import 'package:ayeayecaptain_mobile/app/utils/failure_or_result.dart';
 import 'package:ayeayecaptain_mobile/data/dto/blocks/block_dto.dart';
 import 'package:ayeayecaptain_mobile/data/dto/task_dto.dart';
+import 'package:ayeayecaptain_mobile/data/dto/task_results_dto.dart';
 import 'package:ayeayecaptain_mobile/domain/block/entity/block.dart';
 import 'package:ayeayecaptain_mobile/domain/profile/entity/profile.dart';
+import 'package:ayeayecaptain_mobile/domain/task/entity/task_results.dart';
 import 'package:ayeayecaptain_mobile/domain/task/interface/task_repository.dart'
     as domain;
 import 'package:ayeayecaptain_mobile/domain/task/entity/task.dart';
@@ -16,22 +18,32 @@ class TaskRepository implements domain.TaskRepository {
   TaskRepository(this._client);
 
   @override
-  Future<FailureOrResult<List<Task>>> getTasks(Profile profile) async {
+  Future<FailureOrResult<TaskResults>> getTasks({
+    required Profile profile,
+    required int page,
+    required int pageSize,
+    required String orderBy,
+  }) async {
     final response = await _client.get(
       '${profile.backendUrl}/api/tasks',
+      queryParameters: {
+        'page': page,
+        'page_size': pageSize,
+        'ordering': orderBy,
+      },
       options: Options(headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Token ${profile.token}',
       }),
     );
 
-    final tasksDto = (response.data['results'] as List)
-        .map((e) => TaskDto.fromJson(e as Map<String, dynamic>));
-    return FailureOrResult.success(tasksDto.map((e) => e.toDomain()).toList());
+    return FailureOrResult.success(
+      TaskResultsDto.fromJson(response.data).toDomain(),
+    );
   }
 
   @override
-  Future<FailureOrResult<void>> partiallyUpdateTask({
+  Future<FailureOrResult<void>> saveTaskDetails({
     required Profile profile,
     required String taskId,
     required String title,
@@ -107,6 +119,7 @@ class TaskRepository implements domain.TaskRepository {
     );
 
     final taskDto = TaskDto.fromJson(response.data as Map<String, dynamic>);
-    return FailureOrResult.success(taskDto.toDomain());
+    // page here is not in use (page - 0)
+    return FailureOrResult.success(taskDto.toDomain(0));
   }
 }

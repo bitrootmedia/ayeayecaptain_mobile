@@ -6,6 +6,7 @@ import 'package:ayeayecaptain_mobile/redux/app/app_state.dart';
 import 'package:ayeayecaptain_mobile/redux/navigation/actions.dart';
 import 'package:ayeayecaptain_mobile/redux/task/actions.dart';
 import 'package:ayeayecaptain_mobile/ui/attachment/widget/attachment_order_dropdown.dart';
+import 'package:ayeayecaptain_mobile/ui/components/pagination.dart';
 import 'package:ayeayecaptain_mobile/ui/dialog/page/custom_alert_dialog.dart';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
@@ -31,7 +32,7 @@ class _AttachmentSectionState extends State<AttachmentSection> {
   final store = di<Store<AppState>>();
   bool _isDownloading = false;
 
-  void _deleteAttachments(String id, Task task) {
+  void _deleteAttachment(String id, Task task) {
     store.dispatch(
       OpenAlertDialogAction(
         DialogConfig(
@@ -71,7 +72,10 @@ class _AttachmentSectionState extends State<AttachmentSection> {
     return StoreConnector<AppState, _ViewModel>(
       distinct: true,
       converter: (store) => _ViewModel(store, widget.taskId),
-      onInitialBuild: (viewModel) => viewModel.getAttachments(),
+      onInitialBuild: (viewModel) => viewModel.resetAttachments(),
+      ignoreChange: (state) {
+        return !state.taskState.tasks!.any((e) => e.id == widget.taskId);
+      },
       builder: (context, viewModel) {
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -101,11 +105,12 @@ class _AttachmentSectionState extends State<AttachmentSection> {
                             ),
                           ),
                         ),
-                        getPagination(
+                        Pagination(
                           current: viewModel.task.attachmentsCurrentPage!,
                           total: viewModel.task.attachmentsPagesTotal!,
-                          goToNext: viewModel.getGoToNext(),
-                          goToPrevious: viewModel.getGoToPrevious(),
+                          isDataLoading: viewModel.isAttachmentsLoading,
+                          onPrevPressed: viewModel.onPrevPressed,
+                          onNextPressed: viewModel.onNextPressed,
                         ),
                       ],
                     )
@@ -212,7 +217,7 @@ class _AttachmentSectionState extends State<AttachmentSection> {
             ),
           ),
           IconButton(
-            onPressed: () => _deleteAttachments(attachment.id, task),
+            onPressed: () => _deleteAttachment(attachment.id, task),
             icon: const Icon(
               Icons.delete,
             ),
@@ -253,40 +258,6 @@ class _AttachmentSectionState extends State<AttachmentSection> {
       ),
     );
   }
-
-  Widget getPagination({
-    required int current,
-    required int total,
-    required VoidCallback? goToNext,
-    required VoidCallback? goToPrevious,
-  }) {
-    return total > 1
-        ? Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              goToPrevious == null
-                  ? const SizedBox(width: 48)
-                  : IconButton(
-                      onPressed: goToPrevious,
-                      icon: const Icon(Icons.arrow_back_ios_rounded),
-                    ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                child: Text(
-                  '$current / $total',
-                  style: const TextStyle(fontSize: 16),
-                ),
-              ),
-              goToNext == null
-                  ? const SizedBox(width: 48)
-                  : IconButton(
-                      onPressed: goToNext,
-                      icon: const Icon(Icons.arrow_forward_ios_rounded),
-                    ),
-            ],
-          )
-        : const SizedBox.shrink();
-  }
 }
 
 class _ViewModel with EquatableMixin {
@@ -302,6 +273,16 @@ class _ViewModel with EquatableMixin {
         isAttachmentsLoading = _store.state.taskState.isAttachmentsLoading;
 
   Task get task => tasks!.singleWhere((e) => e.id == taskId);
+
+  void resetAttachments() {
+    _store.dispatch(GetTaskAttachmentsAction(
+      taskId: taskId,
+      page: 1,
+      pageSize: attachmentsPageSize,
+      orderBy: task.attachmentsOrderBy,
+      shouldReset: true,
+    ));
+  }
 
   void getAttachments([int? page]) {
     page ??= task.attachmentsCurrentPage ?? 1;
@@ -320,20 +301,12 @@ class _ViewModel with EquatableMixin {
     }
   }
 
-  VoidCallback? getGoToNext() {
-    return task.attachmentsCurrentPage! < task.attachmentsPagesTotal!
-        ? isAttachmentsLoading
-            ? () {}
-            : () => getAttachments(task.attachmentsCurrentPage! + 1)
-        : null;
+  void onPrevPressed() {
+    getAttachments(task.attachmentsCurrentPage! - 1);
   }
 
-  VoidCallback? getGoToPrevious() {
-    return task.attachmentsCurrentPage! > 1
-        ? isAttachmentsLoading
-            ? () {}
-            : () => getAttachments(task.attachmentsCurrentPage! - 1)
-        : null;
+  void onNextPressed() {
+    getAttachments(task.attachmentsCurrentPage! + 1);
   }
 
   List<Attachment> get currentPageAttachments => task.attachments!
