@@ -17,30 +17,34 @@ class TaskListPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final store = di<Store<AppState>>();
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Tasks'),
-        centerTitle: true,
-        automaticallyImplyLeading: false,
-        leading: IconButton(
-          onPressed: () => store.dispatch(ClosePageAction()),
-          icon: const Icon(Icons.arrow_back_ios_new_rounded),
-        ),
-        actions: [
-          IconButton(
-            onPressed: () => store.dispatch(OpenCreateTaskPageAction()),
-            icon: const Icon(Icons.add_rounded),
+    return StoreConnector<AppState, _ViewModel>(
+      distinct: true,
+      converter: (store) => _ViewModel(store),
+      onInitialBuild: (viewModel) {
+        viewModel.loadData();
+      },
+      builder: (context, viewModel) {
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text('Tasks'),
+            centerTitle: true,
+            automaticallyImplyLeading: false,
+            leading: IconButton(
+              onPressed: () => store.dispatch(ClosePageAction()),
+              icon: const Icon(Icons.arrow_back_ios_new_rounded),
+            ),
+            actions: [
+              IconButton(
+                onPressed: viewModel.refreshTasks,
+                icon: const Icon(Icons.refresh),
+              ),
+              IconButton(
+                onPressed: () => store.dispatch(OpenCreateTaskPageAction()),
+                icon: const Icon(Icons.add_rounded),
+              ),
+            ],
           ),
-        ],
-      ),
-      body: StoreConnector<AppState, _ViewModel>(
-        distinct: true,
-        converter: (store) => _ViewModel(store),
-        onInitialBuild: (viewModel) {
-          viewModel.loadData();
-        },
-        builder: (context, viewModel) {
-          return viewModel.isLoaded
+          body: viewModel.isLoaded
               ? viewModel.currentPageTasks.isNotEmpty
                   ? SingleChildScrollView(
                       child: Column(
@@ -64,7 +68,7 @@ class TaskListPage extends StatelessWidget {
                           ),
                           const SizedBox(height: 4),
                           Pagination(
-                            current: viewModel.currentPage!,
+                            current: viewModel.currentPage,
                             total: viewModel.pagesTotal!,
                             isDataLoading: viewModel.isTasksLoading,
                             onPrevPressed: viewModel.onPrevPressed,
@@ -85,9 +89,9 @@ class TaskListPage extends StatelessWidget {
                     )
               : const Center(
                   child: CircularProgressIndicator(),
-                );
-        },
-      ),
+                ),
+        );
+      },
     );
   }
 }
@@ -97,8 +101,8 @@ class _ViewModel with EquatableMixin {
   final List<Task>? tasks;
   final int? tasksTotal;
   final int? pagesTotal;
-  final int? pageSize;
-  final int? currentPage;
+  final int pageSize;
+  final int currentPage;
   final bool isTasksLoading;
 
   _ViewModel(this._store)
@@ -118,11 +122,11 @@ class _ViewModel with EquatableMixin {
   }
 
   void getTasks([int? page]) {
-    page ??= currentPage ?? 1;
+    page ??= currentPage;
     if (!isLoaded || !tasks!.any((e) => e.page == page)) {
       _store.dispatch(GetTasksAction(
         page: page,
-        pageSize: tasksPageSize,
+        pageSize: pageSize,
         orderBy: tasksOrderBy,
       ));
     } else {
@@ -131,11 +135,20 @@ class _ViewModel with EquatableMixin {
   }
 
   void onPrevPressed() {
-    getTasks(currentPage! - 1);
+    getTasks(currentPage - 1);
   }
 
   void onNextPressed() {
-    getTasks(currentPage! + 1);
+    getTasks(currentPage + 1);
+  }
+
+  void refreshTasks() {
+    _store.dispatch(GetTasksAction(
+      page: currentPage,
+      pageSize: pageSize,
+      orderBy: tasksOrderBy,
+      shouldReset: true,
+    ));
   }
 
   List<Task> get currentPageTasks =>

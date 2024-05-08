@@ -98,8 +98,8 @@ class TaskMiddleware extends EpicMiddleware<AppState> {
 
             if (request.wasSuccessful) {
               yield GetTasksAction(
-                page: store.state.taskState.page!,
-                pageSize: store.state.taskState.pageSize!,
+                page: store.state.taskState.page,
+                pageSize: store.state.taskState.pageSize,
                 orderBy: tasksOrderBy,
                 shouldReset: true,
               );

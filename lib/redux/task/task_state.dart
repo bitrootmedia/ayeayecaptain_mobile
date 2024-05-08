@@ -1,3 +1,4 @@
+import 'package:ayeayecaptain_mobile/app/constants.dart';
 import 'package:ayeayecaptain_mobile/app/utils/nullable.dart';
 import 'package:ayeayecaptain_mobile/domain/task/entity/task.dart';
 
@@ -8,8 +9,8 @@ class TaskState {
   final Task? editingTask;
   final int? tasksTotal;
   final int? pagesTotal;
-  final int? pageSize;
-  final int? page;
+  final int pageSize;
+  final int page;
   final bool isTasksLoading;
 
   TaskState({
@@ -31,8 +32,8 @@ class TaskState {
         editingTask = null,
         pagesTotal = null,
         tasksTotal = null,
-        pageSize = null,
-        page = null,
+        pageSize = tasksPageSize,
+        page = 1,
         isTasksLoading = false;
 
   TaskState copyWith({

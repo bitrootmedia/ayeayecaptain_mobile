@@ -53,8 +53,8 @@ class _EditTaskPageState extends State<EditTaskPage> {
     // page == 0 means only for new task
     if (_clonedTask.page == 0) {
       store.dispatch(GetTasksAction(
-        page: store.state.taskState.page!,
-        pageSize: store.state.taskState.pageSize!,
+        page: store.state.taskState.page,
+        pageSize: store.state.taskState.pageSize,
         orderBy: tasksOrderBy,
         shouldReset: true,
       ));
