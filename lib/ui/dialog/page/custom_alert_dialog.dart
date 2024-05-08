@@ -30,7 +30,9 @@ class CustomAlertDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: dialogConfig.title == null ? null : Text(dialogConfig.title!),
-      content: Text(dialogConfig.content),
+      content: SingleChildScrollView(
+        child: Text(dialogConfig.content),
+      ),
       actions: dialogConfig.actions == null
           ? [
               TextButton(
