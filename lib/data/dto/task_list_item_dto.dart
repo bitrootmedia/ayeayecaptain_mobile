@@ -16,11 +16,11 @@ class TaskListItemDto {
   final DateTime createdAt;
   @JsonKey(name: 'updated_at')
   final DateTime? updatedAt;
-  final String tag;
+  final String? tag;
   final int progress;
   final ProjectDto? project;
-  final int position;
-  final UserDto responsible;
+  final int? position;
+  final UserDto? responsible;
   final UserDto owner;
   @JsonKey(name: 'is_closed')
   final bool isClosed;
@@ -55,7 +55,7 @@ class TaskListItemDto {
         progress: progress,
         project: project?.toDomain(),
         position: position,
-        responsible: responsible.toDomain(),
+        responsible: responsible?.toDomain(),
         owner: owner.toDomain(),
         isClosed: isClosed,
         isUrgent: isUrgent,

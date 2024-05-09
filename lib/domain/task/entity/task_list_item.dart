@@ -10,11 +10,11 @@ class TaskListItem {
   final DateTime? etaDate;
   final DateTime createdAt;
   final DateTime? updatedAt;
-  final String tag;
+  final String? tag;
   final int progress;
   final Project? project;
-  final int position;
-  final User responsible;
+  final int? position;
+  final User? responsible;
   final User owner;
   final bool isClosed;
   final bool isUrgent;
