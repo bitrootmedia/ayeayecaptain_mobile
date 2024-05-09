@@ -1,9 +1,10 @@
 import 'package:ayeayecaptain_mobile/app/constants.dart';
 import 'package:ayeayecaptain_mobile/app/utils/nullable.dart';
 import 'package:ayeayecaptain_mobile/domain/task/entity/task.dart';
+import 'package:ayeayecaptain_mobile/domain/task/entity/task_list_item.dart';
 
 class TaskState {
-  final List<Task>? tasks;
+  final List<TaskListItem>? tasks;
   final bool isAttachmentsLoading;
   final bool dataWasChanged;
   final Task? editingTask;
@@ -12,6 +13,7 @@ class TaskState {
   final int pageSize;
   final int page;
   final bool isTasksLoading;
+  final Task? task;
 
   TaskState({
     required this.tasks,
@@ -23,6 +25,7 @@ class TaskState {
     required this.pageSize,
     required this.page,
     required this.isTasksLoading,
+    required this.task,
   });
 
   TaskState.initial()
@@ -34,10 +37,11 @@ class TaskState {
         tasksTotal = null,
         pageSize = tasksPageSize,
         page = 1,
-        isTasksLoading = false;
+        isTasksLoading = false,
+        task = null;
 
   TaskState copyWith({
-    Nullable<List<Task>>? tasks,
+    Nullable<List<TaskListItem>>? tasks,
     bool? isAttachmentsLoading,
     bool? dataWasChanged,
     Task? editingTask,
@@ -46,6 +50,7 @@ class TaskState {
     int? pageSize,
     int? page,
     bool? isTasksLoading,
+    Task? task,
   }) =>
       TaskState(
         tasks: tasks == null ? this.tasks : tasks.value,
@@ -57,5 +62,6 @@ class TaskState {
         pageSize: pageSize ?? this.pageSize,
         page: page ?? this.page,
         isTasksLoading: isTasksLoading ?? this.isTasksLoading,
+        task: task ?? this.task,
       );
 }

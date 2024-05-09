@@ -77,7 +77,7 @@ class AppRouterDelegate extends RouterDelegate<NavigationState>
                   MaterialPage(
                     key: const ValueKey('editTaskPage'),
                     child: EditTaskPage(
-                      task: viewModel.route.task!,
+                      taskId: viewModel.route.taskId!,
                     ),
                   ),
                 if (viewModel.route.isViewImagePageOpened)

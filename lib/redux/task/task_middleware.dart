@@ -19,6 +19,7 @@ class TaskMiddleware extends EpicMiddleware<AppState> {
               _getTask(repository),
               _saveTaskDetails(repository),
               _createTask(repository),
+              _getNewTask(repository),
               _getTaskAttachments(attachmentRepository),
               _deleteAttachment(attachmentRepository),
             ],
@@ -68,12 +69,8 @@ class TaskMiddleware extends EpicMiddleware<AppState> {
             );
 
             if (request.wasSuccessful) {
-              yield AddTaskAction(request.result!);
-              yield ClosePageAction();
-              yield OpenEditTaskPageAction(request.result!);
+              yield UpdateTaskAction(request.result!);
             }
-
-            yield HideLoaderAction();
           },
         ),
       ).call;
@@ -97,6 +94,7 @@ class TaskMiddleware extends EpicMiddleware<AppState> {
             );
 
             if (request.wasSuccessful) {
+              yield GetTaskAction(action.taskId);
               yield GetTasksAction(
                 page: store.state.taskState.page,
                 pageSize: store.state.taskState.pageSize,
@@ -134,13 +132,44 @@ class TaskMiddleware extends EpicMiddleware<AppState> {
             );
 
             if (request.wasSuccessful) {
-              yield GetTaskAction(request.result!);
+              yield GetNewTaskAction(request.result!);
+              yield GetTasksAction(
+                page: store.state.taskState.page,
+                pageSize: store.state.taskState.pageSize,
+                orderBy: tasksOrderBy,
+                shouldReset: true,
+              );
             } else {
               yield HideLoaderAction();
               yield OpenAlertDialogAction(
                 DialogConfig(content: request.failure!.message),
               );
             }
+          },
+        ),
+      ).call;
+
+  static Epic<AppState> _getNewTask(
+    TaskRepository repository,
+  ) =>
+      TypedEpic(
+        (
+          Stream<GetNewTaskAction> actions,
+          EpicStore<AppState> store,
+        ) =>
+            actions.asyncExpand(
+          (action) async* {
+            final request = await repository.getTask(
+              store.state.profileState.selected!,
+              action.id,
+            );
+
+            if (request.wasSuccessful) {
+              yield UpdateTaskAction(request.result!);
+              yield ClosePageAction();
+              yield OpenEditTaskPageAction(request.result!.id);
+            }
+            yield HideLoaderAction();
           },
         ),
       ).call;

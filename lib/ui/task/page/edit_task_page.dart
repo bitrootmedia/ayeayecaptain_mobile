@@ -19,16 +19,18 @@ import 'package:ayeayecaptain_mobile/ui/dialog/page/custom_alert_dialog.dart';
 import 'package:ayeayecaptain_mobile/ui/task/widget/checklist_block_card.dart';
 import 'package:ayeayecaptain_mobile/ui/task/widget/image_block_card.dart';
 import 'package:ayeayecaptain_mobile/ui/task/widget/markdown_block_card.dart';
+import 'package:equatable/equatable.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 
 class EditTaskPage extends StatefulWidget {
-  final Task task;
+  final String taskId;
 
   const EditTaskPage({
     super.key,
-    required this.task,
+    required this.taskId,
   });
 
   @override
@@ -44,22 +46,14 @@ class _EditTaskPageState extends State<EditTaskPage> {
 
   @override
   void initState() {
-    _clonedTask = widget.task.clone();
+    if (store.state.taskState.task?.id == widget.taskId) {
+      _clonedTask = store.state.taskState.task!.clone();
+    }
     super.initState();
   }
 
   @override
   void dispose() {
-    // page == 0 means only for new task
-    if (_clonedTask.page == 0) {
-      store.dispatch(GetTasksAction(
-        page: store.state.taskState.page,
-        pageSize: store.state.taskState.pageSize,
-        orderBy: tasksOrderBy,
-        shouldReset: true,
-      ));
-    }
-
     store.dispatch(UpdateTaskDataWasChangedAction(
       false,
       _clonedTask,
@@ -108,7 +102,7 @@ class _EditTaskPageState extends State<EditTaskPage> {
       });
       final request = await di<FileRepository>().uploadFile(
         profile: store.state.profileState.selected!,
-        taskId: widget.task.id,
+        taskId: widget.taskId,
         file: File(result.files.single.path!),
       );
       setState(() {
@@ -122,7 +116,7 @@ class _EditTaskPageState extends State<EditTaskPage> {
 
   void _resetAttachments(Task task) {
     store.dispatch(GetTaskAttachmentsAction(
-      taskId: widget.task.id,
+      taskId: widget.taskId,
       page: task.attachmentsCurrentPage ?? 1,
       pageSize: attachmentsPageSize,
       orderBy: task.attachmentsOrderBy,
@@ -136,8 +130,9 @@ class _EditTaskPageState extends State<EditTaskPage> {
   }
 
   void _checkIfDataWasChanged() {
+    final task = store.state.taskState.task!;
     setState(() {
-      _dataWasChanged = !Task.tasksIdentical(widget.task, _clonedTask);
+      _dataWasChanged = !Task.tasksIdentical(task, _clonedTask);
     });
     store.dispatch(UpdateTaskDataWasChangedAction(
       _dataWasChanged,
@@ -187,104 +182,149 @@ class _EditTaskPageState extends State<EditTaskPage> {
             ),
           ],
         ),
-        body: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(vertical: 24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: _isTitleEditing
-                    ? CustomTextField(
-                        label: 'Title',
-                        initialValue: widget.task.title,
-                        validator: isNotEmptyValidator,
-                        onChanged: _updateTitle,
-                      )
-                    : GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            _isTitleEditing = true;
-                          });
-                        },
-                        child: Text(
-                          _clonedTask.title,
-                          style: const TextStyle(
-                            fontSize: 22,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ),
-              ),
-              const SizedBox(height: 24),
-              ReorderableListView(
-                onReorder: _reorderBlocks,
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                children: _clonedTask.blocks
-                    .map(
-                      (e) => e is MarkdownBlock
-                          ? MarkdownBlockCard(
-                              key: ObjectKey(e),
-                              block: e,
-                              onBlockDeleted: _deleteBlock,
-                              checkIfDataWasChanged: _checkIfDataWasChanged,
-                            )
-                          : e is ImageBlock
-                              ? ImageBlockCard(
-                                  key: ObjectKey(e),
-                                  block: e,
-                                  onBlockDeleted: _deleteBlock,
-                                  taskId: _clonedTask.id,
-                                  checkIfDataWasChanged: _checkIfDataWasChanged,
+        body: StoreConnector<AppState, _ViewModel>(
+          distinct: true,
+          converter: (store) => _ViewModel(store, widget.taskId),
+          onInitialBuild: (viewModel) {
+            viewModel.loadData();
+          },
+          onWillChange: (prevVm, newVm) {
+            if (prevVm != null && !prevVm.isLoaded && newVm.isLoaded) {
+              _clonedTask = newVm.task!.clone();
+            }
+          },
+          builder: (context, viewModel) {
+            return viewModel.isLoaded
+                ? SingleChildScrollView(
+                    padding: const EdgeInsets.symmetric(vertical: 24),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: _isTitleEditing
+                              ? CustomTextField(
+                                  label: 'Title',
+                                  initialValue: viewModel.task!.title,
+                                  validator: isNotEmptyValidator,
+                                  onChanged: _updateTitle,
                                 )
-                              : ChecklistBlockCard(
-                                  key: ObjectKey(e),
-                                  block: e as ChecklistBlock,
-                                  onBlockDeleted: _deleteBlock,
-                                  checkIfDataWasChanged: _checkIfDataWasChanged,
+                              : GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      _isTitleEditing = true;
+                                    });
+                                  },
+                                  child: Text(
+                                    _clonedTask.title,
+                                    style: const TextStyle(
+                                      fontSize: 22,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
                                 ),
-                    )
-                    .toList(),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  IconButton(
-                    onPressed: () => _addBlock(MarkdownBlock.empty()),
-                    icon: const Icon(Icons.format_align_left_rounded),
-                  ),
-                  IconButton(
-                    onPressed: () => _addBlock(ImageBlock.empty()),
-                    icon: const Icon(Icons.image),
-                  ),
-                  IconButton(
-                    onPressed: () => _addBlock(ChecklistBlock.empty()),
-                    icon: const Icon(Icons.checklist_rounded),
-                  ),
-                  _isUploading
-                      ? const SizedBox(
-                          width: 48,
-                          child: Center(
-                            child: SizedBox(
-                              width: 24,
-                              height: 24,
-                              child: CircularProgressIndicator(strokeWidth: 3),
-                            ),
-                          ),
-                        )
-                      : IconButton(
-                          onPressed: () => _pickFile(widget.task),
-                          icon: const Icon(Icons.attach_file_rounded),
                         ),
-                ],
-              ),
-              const SizedBox(height: 24),
-              AttachmentSection(taskId: widget.task.id),
-            ],
-          ),
+                        const SizedBox(height: 24),
+                        ReorderableListView(
+                          onReorder: _reorderBlocks,
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          children: _clonedTask.blocks
+                              .map(
+                                (e) => e is MarkdownBlock
+                                    ? MarkdownBlockCard(
+                                        key: ObjectKey(e),
+                                        block: e,
+                                        onBlockDeleted: _deleteBlock,
+                                        checkIfDataWasChanged:
+                                            _checkIfDataWasChanged,
+                                      )
+                                    : e is ImageBlock
+                                        ? ImageBlockCard(
+                                            key: ObjectKey(e),
+                                            block: e,
+                                            onBlockDeleted: _deleteBlock,
+                                            taskId: _clonedTask.id,
+                                            checkIfDataWasChanged:
+                                                _checkIfDataWasChanged,
+                                          )
+                                        : ChecklistBlockCard(
+                                            key: ObjectKey(e),
+                                            block: e as ChecklistBlock,
+                                            onBlockDeleted: _deleteBlock,
+                                            checkIfDataWasChanged:
+                                                _checkIfDataWasChanged,
+                                          ),
+                              )
+                              .toList(),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            IconButton(
+                              onPressed: () => _addBlock(MarkdownBlock.empty()),
+                              icon: const Icon(Icons.format_align_left_rounded),
+                            ),
+                            IconButton(
+                              onPressed: () => _addBlock(ImageBlock.empty()),
+                              icon: const Icon(Icons.image),
+                            ),
+                            IconButton(
+                              onPressed: () =>
+                                  _addBlock(ChecklistBlock.empty()),
+                              icon: const Icon(Icons.checklist_rounded),
+                            ),
+                            _isUploading
+                                ? const SizedBox(
+                                    width: 48,
+                                    child: Center(
+                                      child: SizedBox(
+                                        width: 24,
+                                        height: 24,
+                                        child: CircularProgressIndicator(
+                                            strokeWidth: 3),
+                                      ),
+                                    ),
+                                  )
+                                : IconButton(
+                                    onPressed: () => _pickFile(viewModel.task!),
+                                    icon: const Icon(Icons.attach_file_rounded),
+                                  ),
+                          ],
+                        ),
+                        const SizedBox(height: 24),
+                        AttachmentSection(taskId: widget.taskId),
+                      ],
+                    ),
+                  )
+                : const Center(
+                    child: CircularProgressIndicator(),
+                  );
+          },
         ),
       ),
     );
   }
+}
+
+class _ViewModel with EquatableMixin {
+  final Store<AppState> _store;
+  final Task? task;
+  final String taskId;
+
+  _ViewModel(
+    this._store,
+    this.taskId,
+  ) : task = _store.state.taskState.task;
+
+  bool get isLoaded => task?.id == taskId;
+
+  void loadData() {
+    if (!isLoaded) {
+      _store.dispatch(GetTaskAction(taskId));
+    }
+  }
+
+  @override
+  List<Object?> get props => [task];
 }

@@ -71,8 +71,7 @@ class _ImageBlockCardState extends State<ImageBlockCard> {
   }
 
   void _resetAttachments() {
-    final task =
-        store.state.taskState.tasks!.singleWhere((e) => e.id == widget.taskId);
+    final task = store.state.taskState.task!;
     store.dispatch(GetTaskAttachmentsAction(
       taskId: widget.taskId,
       page: task.attachmentsCurrentPage ?? 1,

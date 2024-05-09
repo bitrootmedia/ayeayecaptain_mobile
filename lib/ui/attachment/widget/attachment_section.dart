@@ -263,16 +263,14 @@ class _AttachmentSectionState extends State<AttachmentSection> {
 class _ViewModel with EquatableMixin {
   final Store<AppState> _store;
   final String taskId;
-  final List<Task>? tasks;
+  final Task task;
   final bool isAttachmentsLoading;
 
   _ViewModel(
     this._store,
     this.taskId,
-  )   : tasks = _store.state.taskState.tasks,
+  )   : task = _store.state.taskState.task!,
         isAttachmentsLoading = _store.state.taskState.isAttachmentsLoading;
-
-  Task get task => tasks!.singleWhere((e) => e.id == taskId);
 
   void resetAttachments() {
     _store.dispatch(GetTaskAttachmentsAction(
@@ -320,7 +318,7 @@ class _ViewModel with EquatableMixin {
 
   @override
   List<Object?> get props => [
-        tasks,
+        task,
         isAttachmentsLoading,
       ];
 }

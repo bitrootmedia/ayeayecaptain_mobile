@@ -33,7 +33,6 @@ class Task {
   final int? attachmentsCurrentPage;
   final int? attachmentsPagesTotal;
   final String attachmentsOrderBy;
-  final int page;
 
   const Task({
     required this.id,
@@ -58,7 +57,6 @@ class Task {
     this.attachmentsCurrentPage,
     this.attachmentsPagesTotal,
     this.attachmentsOrderBy = orderByCreatedAt,
-    required this.page,
   });
 
   Task clone() => Task(
@@ -84,7 +82,6 @@ class Task {
         attachmentsCurrentPage: attachmentsCurrentPage,
         attachmentsPagesTotal: attachmentsPagesTotal,
         attachmentsOrderBy: attachmentsOrderBy,
-        page: page,
       );
 
   Task copyWith({
@@ -121,7 +118,6 @@ class Task {
         attachmentsPagesTotal:
             attachmentsPagesTotal ?? this.attachmentsPagesTotal,
         attachmentsOrderBy: attachmentsOrderBy ?? this.attachmentsOrderBy,
-        page: page,
       );
 
   @override

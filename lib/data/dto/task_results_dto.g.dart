@@ -13,7 +13,7 @@ TaskResultsDto _$TaskResultsDtoFromJson(Map<String, dynamic> json) =>
       json['page_size'] as int,
       json['current'] as int,
       (json['results'] as List<dynamic>)
-          .map((e) => TaskDto.fromJson(e as Map<String, dynamic>))
+          .map((e) => TaskListItemDto.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 

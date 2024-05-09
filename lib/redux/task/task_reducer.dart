@@ -8,7 +8,7 @@ class TaskReducer extends ReducerClass<TaskState> {
   TaskState call(TaskState state, action) {
     return combineReducers<TaskState>([
       TypedReducer(_getTasks).call,
-      TypedReducer(_addTask).call,
+      TypedReducer(_updateTask).call,
       TypedReducer(_addTasks).call,
       TypedReducer(_updateTasksPage).call,
       TypedReducer(_resetTasks).call,
@@ -27,17 +27,12 @@ class TaskReducer extends ReducerClass<TaskState> {
         isTasksLoading: true,
       );
 
-  TaskState _addTask(
+  TaskState _updateTask(
     TaskState state,
-    AddTaskAction action,
+    UpdateTaskAction action,
   ) =>
       state.copyWith(
-        tasks: Nullable(
-          [
-            ...?state.tasks,
-            action.task,
-          ],
-        ),
+        task: action.task,
       );
 
   TaskState _addTasks(
@@ -98,23 +93,19 @@ class TaskReducer extends ReducerClass<TaskState> {
     AddTaskAttachmentsAction action,
   ) =>
       state.copyWith(
-        tasks: Nullable(state.tasks
-            ?.map((e) => e.id == action.taskId
-                ? e.copyWith(
-                    attachments: action.shouldReset
-                        ? action.attachmentResults.attachments
-                        : [
-                            ...?e.attachments,
-                            ...action.attachmentResults.attachments,
-                          ],
-                    attachmentsTotal: action.attachmentResults.attachmentsTotal,
-                    attachmentsPageSize: action.attachmentResults.pageSize,
-                    attachmentsCurrentPage: action.attachmentResults.page,
-                    attachmentsPagesTotal: action.attachmentResults.pagesTotal,
-                    attachmentsOrderBy: action.orderBy,
-                  )
-                : e)
-            .toList()),
+        task: state.task?.copyWith(
+          attachments: action.shouldReset
+              ? action.attachmentResults.attachments
+              : [
+                  ...?state.task!.attachments,
+                  ...action.attachmentResults.attachments,
+                ],
+          attachmentsTotal: action.attachmentResults.attachmentsTotal,
+          attachmentsPageSize: action.attachmentResults.pageSize,
+          attachmentsCurrentPage: action.attachmentResults.page,
+          attachmentsPagesTotal: action.attachmentResults.pagesTotal,
+          attachmentsOrderBy: action.orderBy,
+        ),
         isAttachmentsLoading: false,
       );
 
@@ -123,12 +114,8 @@ class TaskReducer extends ReducerClass<TaskState> {
     UpdateTaskAttachmentsPageAction action,
   ) =>
       state.copyWith(
-        tasks: Nullable(state.tasks
-            ?.map((e) => e.id == action.taskId
-                ? e.copyWith(
-                    attachmentsCurrentPage: action.page,
-                  )
-                : e)
-            .toList()),
+        task: state.task?.copyWith(
+          attachmentsCurrentPage: action.page,
+        ),
       );
 }

@@ -125,8 +125,14 @@ class GetTaskAction {
   GetTaskAction(this.id);
 }
 
-class AddTaskAction {
+class GetNewTaskAction {
+  final String id;
+
+  GetNewTaskAction(this.id);
+}
+
+class UpdateTaskAction {
   final Task task;
 
-  AddTaskAction(this.task);
+  UpdateTaskAction(this.task);
 }

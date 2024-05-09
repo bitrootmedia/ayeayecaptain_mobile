@@ -1,16 +1,12 @@
-import 'package:ayeayecaptain_mobile/data/dto/blocks/block_dto.dart';
-import 'package:ayeayecaptain_mobile/data/dto/blocks/checklist_block_dto.dart';
-import 'package:ayeayecaptain_mobile/data/dto/blocks/image_block_dto.dart';
-import 'package:ayeayecaptain_mobile/data/dto/blocks/markdown_block_dto.dart';
 import 'package:ayeayecaptain_mobile/data/dto/project_dto.dart';
 import 'package:ayeayecaptain_mobile/data/dto/user_dto.dart';
-import 'package:ayeayecaptain_mobile/domain/task/entity/task.dart';
+import 'package:ayeayecaptain_mobile/domain/task/entity/task_list_item.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-part 'task_dto.g.dart';
+part 'task_list_item_dto.g.dart';
 
 @JsonSerializable()
-class TaskDto {
+class TaskListItemDto {
   final String id;
   final String title;
   final String? status;
@@ -22,9 +18,6 @@ class TaskDto {
   final DateTime? updatedAt;
   final String tag;
   final int progress;
-  final String description;
-  @JsonKey(fromJson: _blocksFromJson)
-  final List<BlockDto> blocks;
   final ProjectDto? project;
   final int position;
   final UserDto responsible;
@@ -34,7 +27,7 @@ class TaskDto {
   @JsonKey(name: 'is_urgent')
   final bool isUrgent;
 
-  TaskDto(
+  TaskListItemDto(
     this.id,
     this.title,
     this.status,
@@ -43,8 +36,6 @@ class TaskDto {
     this.updatedAt,
     this.tag,
     this.progress,
-    this.description,
-    this.blocks,
     this.project,
     this.position,
     this.responsible,
@@ -53,7 +44,7 @@ class TaskDto {
     this.isUrgent,
   );
 
-  Task toDomain() => Task(
+  TaskListItem toDomain(int page) => TaskListItem(
         id: id,
         title: title,
         status: status,
@@ -62,33 +53,17 @@ class TaskDto {
         updatedAt: updatedAt,
         tag: tag,
         progress: progress,
-        description: description,
-        blocks: blocks.map((e) => e.toDomain()).toList(),
         project: project?.toDomain(),
         position: position,
         responsible: responsible.toDomain(),
         owner: owner.toDomain(),
         isClosed: isClosed,
         isUrgent: isUrgent,
+        page: page,
       );
 
-  static List<BlockDto> _blocksFromJson(List<dynamic> json) {
-    return json.map((e) {
-      switch (e['type']) {
-        case 'markdown':
-          return MarkdownBlockDto.fromJson(e);
-        case 'image':
-          return ImageBlockDto.fromJson(e);
-        case 'checklist':
-          return ChecklistBlockDto.fromJson(e);
-        default:
-          throw ArgumentError('Unknown block type: ${e['type']}');
-      }
-    }).toList();
-  }
+  factory TaskListItemDto.fromJson(Map<String, dynamic> json) =>
+      _$TaskListItemDtoFromJson(json);
 
-  factory TaskDto.fromJson(Map<String, dynamic> json) =>
-      _$TaskDtoFromJson(json);
-
-  Map<String, dynamic> toJson() => _$TaskDtoToJson(this);
+  Map<String, dynamic> toJson() => _$TaskListItemDtoToJson(this);
 }

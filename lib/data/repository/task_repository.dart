@@ -119,7 +119,6 @@ class TaskRepository implements domain.TaskRepository {
     );
 
     final taskDto = TaskDto.fromJson(response.data as Map<String, dynamic>);
-    // page here is not in use (page - 0)
-    return FailureOrResult.success(taskDto.toDomain(0));
+    return FailureOrResult.success(taskDto.toDomain());
   }
 }

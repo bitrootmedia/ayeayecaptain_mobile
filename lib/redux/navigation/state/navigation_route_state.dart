@@ -1,4 +1,3 @@
-import 'package:ayeayecaptain_mobile/domain/task/entity/task.dart';
 import 'package:ayeayecaptain_mobile/ui/dialog/page/custom_alert_dialog.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
@@ -13,7 +12,7 @@ class NavigationRouteState with EquatableMixin {
   final bool isProjectListPageOpened;
   final bool isTaskListPageOpened;
   final bool isEditTaskPageOpened;
-  final Task? task;
+  final String? taskId;
   final bool isViewImagePageOpened;
   final String? imagePath;
   final bool isCreateTaskPageOpened;
@@ -27,7 +26,7 @@ class NavigationRouteState with EquatableMixin {
     this.isProjectListPageOpened = false,
     this.isTaskListPageOpened = false,
     this.isEditTaskPageOpened = false,
-    this.task,
+    this.taskId,
     this.isViewImagePageOpened = false,
     this.imagePath,
     this.isCreateTaskPageOpened = false,
@@ -42,7 +41,7 @@ class NavigationRouteState with EquatableMixin {
         isProjectListPageOpened = false,
         isTaskListPageOpened = false,
         isEditTaskPageOpened = false,
-        task = null,
+        taskId = null,
         isViewImagePageOpened = false,
         imagePath = null,
         isCreateTaskPageOpened = false;
@@ -56,7 +55,7 @@ class NavigationRouteState with EquatableMixin {
     bool? isProjectListPageOpened,
     bool? isTaskListPageOpened,
     bool? isEditTaskPageOpened,
-    Task? task,
+    String? taskId,
     bool? isViewImagePageOpened,
     String? imagePath,
     bool? isCreateTaskPageOpened,
@@ -73,7 +72,7 @@ class NavigationRouteState with EquatableMixin {
             isProjectListPageOpened ?? this.isProjectListPageOpened,
         isTaskListPageOpened: isTaskListPageOpened ?? this.isTaskListPageOpened,
         isEditTaskPageOpened: isEditTaskPageOpened ?? this.isEditTaskPageOpened,
-        task: task ?? this.task,
+        taskId: taskId ?? this.taskId,
         isViewImagePageOpened:
             isViewImagePageOpened ?? this.isViewImagePageOpened,
         imagePath: imagePath ?? this.imagePath,
@@ -91,7 +90,7 @@ class NavigationRouteState with EquatableMixin {
         isProjectListPageOpened,
         isTaskListPageOpened,
         isEditTaskPageOpened,
-        task,
+        taskId,
         isViewImagePageOpened,
         imagePath,
         isCreateTaskPageOpened,

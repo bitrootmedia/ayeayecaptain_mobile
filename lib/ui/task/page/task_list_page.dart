@@ -1,6 +1,6 @@
 import 'package:ayeayecaptain_mobile/app/constants.dart';
 import 'package:ayeayecaptain_mobile/app/globals.dart';
-import 'package:ayeayecaptain_mobile/domain/task/entity/task.dart';
+import 'package:ayeayecaptain_mobile/domain/task/entity/task_list_item.dart';
 import 'package:ayeayecaptain_mobile/redux/app/app_state.dart';
 import 'package:ayeayecaptain_mobile/redux/navigation/actions.dart';
 import 'package:ayeayecaptain_mobile/redux/task/actions.dart';
@@ -58,7 +58,7 @@ class TaskListPage extends StatelessWidget {
                               return ListTile(
                                 title: Text(task.title),
                                 onTap: () => store
-                                    .dispatch(OpenEditTaskPageAction(task)),
+                                    .dispatch(OpenEditTaskPageAction(task.id)),
                               );
                             },
                             separatorBuilder: (_, __) => const Divider(
@@ -98,7 +98,7 @@ class TaskListPage extends StatelessWidget {
 
 class _ViewModel with EquatableMixin {
   final Store<AppState> _store;
-  final List<Task>? tasks;
+  final List<TaskListItem>? tasks;
   final int? tasksTotal;
   final int? pagesTotal;
   final int pageSize;
@@ -151,7 +151,7 @@ class _ViewModel with EquatableMixin {
     ));
   }
 
-  List<Task> get currentPageTasks =>
+  List<TaskListItem> get currentPageTasks =>
       tasks?.where((e) => e.page == currentPage).toList() ?? [];
 
   @override

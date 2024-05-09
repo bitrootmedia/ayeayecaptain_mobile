@@ -122,7 +122,7 @@ class NavigationReducer extends ReducerClass<NavigationState> {
         ],
         currentRoute: state.currentRoute.copyWith(
           isEditTaskPageOpened: true,
-          task: action.task,
+          taskId: action.taskId,
         ),
       );
 

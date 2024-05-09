@@ -1,4 +1,4 @@
-import 'package:ayeayecaptain_mobile/domain/task/entity/task.dart';
+import 'package:ayeayecaptain_mobile/domain/task/entity/task_list_item.dart';
 import 'package:flutter/foundation.dart';
 
 @immutable
@@ -7,7 +7,7 @@ class TaskResults {
   final int pagesTotal;
   final int pageSize;
   final int page;
-  final List<Task> tasks;
+  final List<TaskListItem> tasks;
 
   const TaskResults({
     required this.tasksTotal,

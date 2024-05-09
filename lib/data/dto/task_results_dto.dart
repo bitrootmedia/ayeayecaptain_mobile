@@ -1,4 +1,4 @@
-import 'package:ayeayecaptain_mobile/data/dto/task_dto.dart';
+import 'package:ayeayecaptain_mobile/data/dto/task_list_item_dto.dart';
 import 'package:ayeayecaptain_mobile/domain/task/entity/task_results.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -11,7 +11,7 @@ class TaskResultsDto {
   @JsonKey(name: 'page_size')
   final int pageSize;
   final int current;
-  final List<TaskDto> results;
+  final List<TaskListItemDto> results;
 
   TaskResultsDto(
     this.count,
