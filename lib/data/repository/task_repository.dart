@@ -110,15 +110,19 @@ class TaskRepository implements domain.TaskRepository {
     Profile profile,
     String id,
   ) async {
-    final response = await _client.get(
-      '${profile.backendUrl}/api/task/$id',
-      options: Options(headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Token ${profile.token}',
-      }),
-    );
+    try {
+      final response = await _client.get(
+        '${profile.backendUrl}/api/task/$id',
+        options: Options(headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Token ${profile.token}',
+        }),
+      );
 
-    final taskDto = TaskDto.fromJson(response.data as Map<String, dynamic>);
-    return FailureOrResult.success(taskDto.toDomain());
+      final taskDto = TaskDto.fromJson(response.data as Map<String, dynamic>);
+      return FailureOrResult.success(taskDto.toDomain());
+    } on ArgumentError catch (e) {
+      return FailureOrResult.failure(message: e.message);
+    }
   }
 }

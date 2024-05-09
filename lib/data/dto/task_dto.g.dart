@@ -17,15 +17,17 @@ TaskDto _$TaskDtoFromJson(Map<String, dynamic> json) => TaskDto(
       json['updated_at'] == null
           ? null
           : DateTime.parse(json['updated_at'] as String),
-      json['tag'] as String,
+      json['tag'] as String?,
       json['progress'] as int,
       json['description'] as String,
-      TaskDto._blocksFromJson(json['blocks'] as List),
+      TaskDto._blocksFromJson(json['blocks']),
       json['project'] == null
           ? null
           : ProjectDto.fromJson(json['project'] as Map<String, dynamic>),
-      json['position'] as int,
-      UserDto.fromJson(json['responsible'] as Map<String, dynamic>),
+      json['position'] as int?,
+      json['responsible'] == null
+          ? null
+          : UserDto.fromJson(json['responsible'] as Map<String, dynamic>),
       UserDto.fromJson(json['owner'] as Map<String, dynamic>),
       json['is_closed'] as bool,
       json['is_urgent'] as bool,

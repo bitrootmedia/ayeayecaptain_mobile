@@ -70,6 +70,10 @@ class TaskMiddleware extends EpicMiddleware<AppState> {
 
             if (request.wasSuccessful) {
               yield UpdateTaskAction(request.result!);
+            } else {
+              yield OpenAlertDialogAction(
+                DialogConfig(content: request.failure!.message),
+              );
             }
           },
         ),
