@@ -1,4 +1,7 @@
 import 'package:ayeayecaptain_mobile/redux/app/app_state.dart';
+import 'package:ayeayecaptain_mobile/redux/navigation/actions.dart';
+import 'package:ayeayecaptain_mobile/redux/navigation/state/navigation_route_state.dart';
+import 'package:ayeayecaptain_mobile/redux/navigation/state/navigation_state.dart';
 import 'package:ayeayecaptain_mobile/redux/task/actions.dart';
 import 'package:ayeayecaptain_mobile/ui/components/loader.dart';
 import 'package:ayeayecaptain_mobile/ui/components/material_dialog.dart';
@@ -11,17 +14,13 @@ import 'package:ayeayecaptain_mobile/ui/task/page/create_task_page.dart';
 import 'package:ayeayecaptain_mobile/ui/task/page/edit_task_page.dart';
 import 'package:ayeayecaptain_mobile/ui/task/page/task_list_page.dart';
 import 'package:ayeayecaptain_mobile/ui/task/page/view_image_page.dart';
+import 'package:ayeayecaptain_mobile/ui/temporary_home_screen/temporary_home_page.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:ayeayecaptain_mobile/redux/navigation/actions.dart';
-import 'package:ayeayecaptain_mobile/redux/navigation/state/navigation_route_state.dart';
-import 'package:ayeayecaptain_mobile/redux/navigation/state/navigation_state.dart';
-
 import 'package:redux/redux.dart';
 
-class AppRouterDelegate extends RouterDelegate<NavigationState>
-    with ChangeNotifier, PopNavigatorRouterDelegateMixin {
+class AppRouterDelegate extends RouterDelegate<NavigationState> with ChangeNotifier, PopNavigatorRouterDelegateMixin {
   @override
   final GlobalKey<NavigatorState> navigatorKey;
   final Store<AppState> _store;
@@ -51,7 +50,7 @@ class AppRouterDelegate extends RouterDelegate<NavigationState>
                 if (viewModel.route.isHomePageOpened)
                   const MaterialPage(
                     key: ValueKey('homePage'),
-                    child: HomePage(),
+                    child: true ? TemporaryHomePage() : HomePage(),
                   ),
                 if (viewModel.route.isProjectListPageOpened)
                   const MaterialPage(
@@ -111,8 +110,7 @@ class AppRouterDelegate extends RouterDelegate<NavigationState>
 
   @override
   Future<bool> popRoute() {
-    if (_store.state.navigationState.currentRoute.isEditTaskPageOpened &&
-        _store.state.taskState.dataWasChanged) {
+    if (_store.state.navigationState.currentRoute.isEditTaskPageOpened && _store.state.taskState.dataWasChanged) {
       _store.dispatch(OpenAlertDialogAction(DialogConfig(
         content: 'Changes have not been saved.',
         actions: [

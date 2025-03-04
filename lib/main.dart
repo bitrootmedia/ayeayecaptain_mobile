@@ -1,23 +1,24 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:ayeayecaptain_mobile/app/app.dart';
+import 'package:ayeayecaptain_mobile/app/globals.dart';
+import 'package:ayeayecaptain_mobile/app/initializer.dart';
 import 'package:ayeayecaptain_mobile/redux/app/app_state.dart';
 import 'package:ayeayecaptain_mobile/redux/navigation/actions.dart';
 import 'package:ayeayecaptain_mobile/ui/dialog/page/custom_alert_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:ayeayecaptain_mobile/app/app.dart';
-import 'package:ayeayecaptain_mobile/app/globals.dart';
-import 'package:ayeayecaptain_mobile/app/initializer.dart';
 import 'package:redux/redux.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 Future<void> main() async {
   runZonedGuarded(
     () async {
       WidgetsFlutterBinding.ensureInitialized();
-      await SystemChrome.setPreferredOrientations(
-          [DeviceOrientation.portraitUp]);
+      await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
       await initialize();
+      await WakelockPlus.enable();
       runApp(App(store: di()));
     },
     (error, stackTrace) {

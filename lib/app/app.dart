@@ -1,13 +1,12 @@
-import 'package:ayeayecaptain_mobile/app/theme/app_theme.dart';
-import 'package:ayeayecaptain_mobile/redux/app/app_state.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_redux/flutter_redux.dart';
 import 'package:ayeayecaptain_mobile/app/globals.dart';
 import 'package:ayeayecaptain_mobile/app/router/app/app_route_information_parser.dart';
 import 'package:ayeayecaptain_mobile/app/router/app/app_router_delegate.dart';
-
-import 'package:redux/redux.dart';
+import 'package:ayeayecaptain_mobile/app/theme/app_theme.dart';
+import 'package:ayeayecaptain_mobile/redux/app/app_state.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+import 'package:redux/redux.dart';
 
 class App extends StatefulWidget {
   final Store<AppState> store;
@@ -37,6 +36,7 @@ class _AppState extends State<App> {
     return StoreProvider(
       store: widget.store,
       child: MaterialApp.router(
+        debugShowCheckedModeBanner: false,
         routeInformationParser: _parser,
         routerDelegate: _delegate,
         backButtonDispatcher: RootBackButtonDispatcher(),
@@ -54,10 +54,7 @@ class _AppState extends State<App> {
     Locale? locale,
     Iterable<Locale> supportedLocales,
   ) {
-    if (locale != null &&
-        !supportedLocales
-            .map((e) => e.languageCode)
-            .contains(locale.languageCode)) {
+    if (locale != null && !supportedLocales.map((e) => e.languageCode).contains(locale.languageCode)) {
       return const Locale('en');
     }
     return null;

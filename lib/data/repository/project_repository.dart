@@ -2,8 +2,7 @@ import 'package:ayeayecaptain_mobile/app/utils/failure_or_result.dart';
 import 'package:ayeayecaptain_mobile/data/dto/project_dto.dart';
 import 'package:ayeayecaptain_mobile/domain/profile/entity/profile.dart';
 import 'package:ayeayecaptain_mobile/domain/project/entity/project.dart';
-import 'package:ayeayecaptain_mobile/domain/project/interface/project_repository.dart'
-    as domain;
+import 'package:ayeayecaptain_mobile/domain/project/interface/project_repository.dart' as domain;
 import 'package:dio/dio.dart';
 
 class ProjectRepository implements domain.ProjectRepository {
@@ -21,9 +20,7 @@ class ProjectRepository implements domain.ProjectRepository {
       }),
     );
 
-    final projectsDto = (response.data['results'] as List)
-        .map((e) => ProjectDto.fromJson(e as Map<String, dynamic>));
-    return FailureOrResult.success(
-        projectsDto.map((e) => e.toDomain()).toList());
+    final projectsDto = (response.data['results'] as List).map((e) => ProjectDto.fromJson(e as Map<String, dynamic>));
+    return FailureOrResult.success(projectsDto.map((e) => e.toDomain()).toList());
   }
 }

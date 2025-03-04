@@ -1,0 +1,2 @@
+/Users/mostafabastawy/StudioProjects/ayeayecaptain_mobile/android/app/.cxx/RelWithDebInfo/70596l63/x86/CMakeFiles/edit_cache.dir
+/Users/mostafabastawy/StudioProjects/ayeayecaptain_mobile/android/app/.cxx/RelWithDebInfo/70596l63/x86/CMakeFiles/rebuild_cache.dir

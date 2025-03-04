@@ -1,0 +1,1 @@
+/Users/mostafabastawy/StudioProjects/ayeayecaptain_mobile/build/app/intermediates/cxx/RelWithDebInfo/70596l63/obj/arm64-v8a
