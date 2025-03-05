@@ -41,3 +41,7 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+#build files for CMake and ndk-build
+/android/app/.cxx/
+/android/.kotlin/
